@@ -1,0 +1,388 @@
+[
+  {
+    "id": 0,
+    "author": "user",
+    "payload": {
+      "type": "text",
+      "text": "buat app tujuannya untuk edukasi ibu menyusui seputar ASI Eksklusif dan sebagainya. \n\nrencananya app yg ku mau itu isinya buat edukasi aja. beberapa fitur yg masih dibayang”ku itu begini :\n- beberapa section per materi\n- kalkulator IMT\n- user bisa add catatan/note (karena kan ini fokusnya busui, nah jd si ibu itu bisa catat durasi dan frekuensi menyusui dia utk  tracking)\n\nmenu lainnya silahkan improvisasi, simpan semua data secara offline",
+      "files": [],
+      "fileUploads": [],
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1769754955,
+      "nanos": 378000000
+    }
+  },
+  {
+    "id": 1,
+    "author": "model",
+    "payload": {
+      "type": "thinking",
+      "text": "**Developing EduBusui Features**\n\nI'm currently focused on the essential features for EduBusui. We're incorporating educational content around Exclusive Breastfeeding. Plus, I'm thinking about the BMI calculator, and a nursing log for tracking duration and frequency. I've decided data storage will be offline, which should offer greater privacy and accessibility for users.\n\n\n**Defining Core Functionality**\n\nI've been solidifying the core functionality now. We have a solid tech stack with React 18+, TypeScript, and Tailwind CSS. The design will be world-class, thanks to a senior front-end engineer. Key features are coming into focus, like the Dashboard for quick access, Education Center for structured learning, the Breastfeeding Tracker, and a Health Tools section. I am developing an AI Konselor too, with Gemini API to offer conversational assistance. The initial architecture is taking shape with clear file structure.\n\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1769754955,
+      "nanos": 379000000
+    },
+    "doneTimestamp": {
+      "seconds": 1769754963,
+      "nanos": 959000000
+    }
+  },
+  {
+    "id": 2,
+    "author": "model",
+    "payload": {
+      "type": "generationTable",
+      "entries": [
+        {
+          "path": "metadata.json",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Application metadata including name and description.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\n{\n  \"name\": \"MamaNutri - Edukasi & Tracker ASI Eksklusif\",\n  \"description\": \"Aplikasi pendamping ibu menyusui yang menyediakan materi edukasi ASI Eksklusif, kalkulator IMT, pelacakan durasi menyusui, dan asisten AI untuk konsultasi laktasi.\"\n}\n"
+            }
+          ]
+        },
+        {
+          "path": "index.html",
+          "generationType": 0,
+          "isDone": true,
+          "description": "HTML entry point with Tailwind CSS and Google Fonts.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\n<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>MamaNutri - Edukasi ASI Eksklusif</title>\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n    <link href=\"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap\" rel=\"stylesheet\">\n    <style>\n        body {\n            font-family: 'Plus Jakarta Sans', sans-serif;\n            background-color: #fdf2f8;\n        }\n        .glass-card {\n            background: rgba(255, 255, 255, 0.8);\n            backdrop-filter: blur(8px);\n            border: 1px solid rgba(255, 255, 255, 0.3);\n        }\n    </style>\n</head>\n<body>\n    <div id=\"root\"></div>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "path": "index.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "React entry point using createRoot.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App';\n\nconst rootElement = document.getElementById('root');\nif (!rootElement) {\n  throw new Error(\"Could not find root element to mount to\");\n}\n\nconst root = ReactDOM.createRoot(rootElement);\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);\n"
+            }
+          ]
+        },
+        {
+          "path": "types.ts",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Global TypeScript interfaces and enums.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nexport interface NursingLog {\n  id: string;\n  timestamp: string;\n  duration: number; // in minutes\n  side: 'Left' | 'Right' | 'Both';\n  note?: string;\n}\n\nexport interface BMIData {\n  weight: number;\n  height: number;\n  bmi: number;\n  category: string;\n  date: string;\n}\n\nexport interface EducationArticle {\n  id: string;\n  title: string;\n  category: 'Dasar' | 'Teknik' | 'Nutrisi' | 'Masalah';\n  content: string;\n  icon: string;\n}\n\nexport enum AppTab {\n  DASHBOARD = 'dashboard',\n  EDUCATION = 'education',\n  TRACKER = 'tracker',\n  HEALTH = 'health',\n  AI_CONSULT = 'ai_consult'\n}\n"
+            }
+          ]
+        },
+        {
+          "path": "constants.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Educational content and icons.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport React from 'react';\nimport { BookOpen, Droplets, Utensils, AlertCircle } from 'lucide-react';\nimport { EducationArticle } from './types';\n\nexport const EDUCATION_ARTICLES: EducationArticle[] = [\n  {\n    id: '1',\n    category: 'Dasar',\n    title: 'Pentingnya ASI Eksklusif 6 Bulan',\n    icon: 'BookOpen',\n    content: `ASI Eksklusif adalah pemberian ASI saja selama 6 bulan pertama kehidupan bayi tanpa tambahan cairan atau makanan lain. ASI mengandung antibodi yang melindungi bayi dari infeksi usus, diare, dan infeksi telinga.`\n  },\n  {\n    id: '2',\n    category: 'Teknik',\n    title: 'Posisi Menyusui yang Benar',\n    icon: 'Droplets',\n    content: `Kunci menyusui yang sukses adalah pelekatan. Pastikan perut bayi menempel pada perut ibu (belly to belly), mulut bayi terbuka lebar, dan dagu bayi menempel pada payudara.`\n  },\n  {\n    id: '3',\n    category: 'Nutrisi',\n    title: 'Asupan Ibu Menyusui',\n    icon: 'Utensils',\n    content: `Ibu menyusui membutuhkan tambahan energi sekitar 500 kkal/hari. Fokus pada gizi seimbang: karbohidrat kompleks, protein (ikan, telur, kacang-kacangan), lemak sehat, serta sayuran hijau seperti daun katuk.`\n  },\n  {\n    id: '4',\n    category: 'Masalah',\n    title: 'Mengatasi Puting Lecet',\n    icon: 'AlertCircle',\n    content: `Puting lecet biasanya disebabkan pelekatan yang salah. Cara mengatasinya: oleskan ASI pada puting setelah menyusui, pastikan mulut bayi mencakup sebagian besar areola, dan konsultasikan ke konselor laktasi jika nyeri berlanjut.`\n  }\n];\n\nexport const getIcon = (name: string) => {\n  switch (name) {\n    case 'BookOpen': return <BookOpen className=\"w-5 h-5\" />;\n    case 'Droplets': return <Droplets className=\"w-5 h-5\" />;\n    case 'Utensils': return <Utensils className=\"w-5 h-5\" />;\n    case 'AlertCircle': return <AlertCircle className=\"w-5 h-5\" />;\n    default: return <BookOpen className=\"w-5 h-5\" />;\n  }\n};\n"
+            }
+          ]
+        },
+        {
+          "path": "services/storage.ts",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Offline storage service using LocalStorage.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport { NursingLog, BMIData } from '../types';\n\nconst LOGS_KEY = 'mamanutri_logs';\nconst BMI_KEY = 'mamanutri_bmi';\n\nexport const storage = {\n  getLogs: (): NursingLog[] => {\n    const data = localStorage.getItem(LOGS_KEY);\n    return data ? JSON.parse(data) : [];\n  },\n  saveLog: (log: NursingLog) => {\n    const logs = storage.getLogs();\n    logs.unshift(log);\n    localStorage.setItem(LOGS_KEY, JSON.stringify(logs));\n  },\n  deleteLog: (id: string) => {\n    const logs = storage.getLogs();\n    const filtered = logs.filter(l => l.id !== id);\n    localStorage.setItem(LOGS_KEY, JSON.stringify(filtered));\n  },\n  getBMIData: (): BMIData[] => {\n    const data = localStorage.getItem(BMI_KEY);\n    return data ? JSON.parse(data) : [];\n  },\n  saveBMI: (bmi: BMIData) => {\n    const history = storage.getBMIData();\n    history.unshift(bmi);\n    localStorage.setItem(BMI_KEY, JSON.stringify(history));\n  }\n};\n"
+            }
+          ]
+        },
+        {
+          "path": "services/geminiService.ts",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Gemini AI service for lactation consultation.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport { GoogleGenAI } from \"@google/genai\";\n\nconst SYSTEM_INSTRUCTION = `\nAnda adalah asisten konselor laktasi profesional bernama 'MamaBot'. \nTujuan Anda adalah membantu ibu menyusui dengan informasi berbasis bukti (evidence-based) seputar ASI Eksklusif.\n- Jawablah dengan ramah, suportif, dan empati.\n- Berikan saran praktis tentang teknik menyusui, nutrisi, dan manajemen ASI perah.\n- Jika ada kondisi medis darurat (seperti mastitis parah), sarankan ibu untuk segera ke dokter.\n- Gunakan Bahasa Indonesia yang hangat.\n`;\n\nexport const askMamaBot = async (prompt: string): Promise<string> => {\n  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });\n  try {\n    const response = await ai.models.generateContent({\n      model: 'gemini-3-flash-preview',\n      contents: prompt,\n      config: {\n        systemInstruction: SYSTEM_INSTRUCTION,\n        temperature: 0.7,\n      },\n    });\n    return response.text || \"Maaf, MamaBot sedang beristirahat sebentar. Silakan coba lagi nanti.\";\n  } catch (error) {\n    console.error(\"Gemini Error:\", error);\n    return \"Terjadi kesalahan saat menghubungi MamaBot. Pastikan koneksi internet aktif.\";\n  }\n};\n"
+            }
+          ]
+        },
+        {
+          "path": "components/BMISection.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "BMI Calculator component.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport React, { useState, useEffect } from 'react';\nimport { storage } from '../services/storage';\nimport { BMIData } from '../types';\nimport { Calculator, History } from 'lucide-react';\n\nconst BMISection: React.FC = () => {\n  const [weight, setWeight] = useState<string>('');\n  const [height, setHeight] = useState<string>('');\n  const [history, setHistory] = useState<BMIData[]>([]);\n  const [result, setResult] = useState<BMIData | null>(null);\n\n  useEffect(() => {\n    setHistory(storage.getBMIData());\n  }, []);\n\n  const calculateBMI = () => {\n    const w = parseFloat(weight);\n    const h = parseFloat(height) / 100; // to meters\n    if (w > 0 && h > 0) {\n      const bmi = parseFloat((w / (h * h)).toFixed(1));\n      let category = '';\n      if (bmi < 18.5) category = 'Kekurangan Berat Badan';\n      else if (bmi < 25) category = 'Normal';\n      else if (bmi < 30) category = 'Kelebihan Berat Badan';\n      else category = 'Obesitas';\n\n      const newData: BMIData = {\n        weight: w,\n        height: parseFloat(height),\n        bmi,\n        category,\n        date: new Date().toLocaleDateString('id-ID')\n      };\n\n      setResult(newData);\n      storage.saveBMI(newData);\n      setHistory(storage.getBMIData());\n    }\n  };\n\n  return (\n    <div className=\"space-y-6 pb-20 animate-fade-in\">\n      <div className=\"glass-card p-6 rounded-3xl shadow-sm border-pink-100\">\n        <div className=\"flex items-center gap-3 mb-6\">\n          <div className=\"p-2 bg-pink-100 rounded-lg text-pink-600\">\n            <Calculator size={24} />\n          </div>\n          <h2 className=\"text-xl font-bold text-gray-800\">Kalkulator IMT</h2>\n        </div>\n\n        <div className=\"grid grid-cols-2 gap-4 mb-6\">\n          <div>\n            <label className=\"block text-sm font-medium text-gray-600 mb-1\">Berat Badan (kg)</label>\n            <input \n              type=\"number\" \n              value={weight} \n              onChange={(e) => setWeight(e.target.value)}\n              className=\"w-full p-3 rounded-2xl border border-pink-100 focus:ring-2 focus:ring-pink-300 outline-none\"\n              placeholder=\"e.g. 55\"\n            />\n          </div>\n          <div>\n            <label className=\"block text-sm font-medium text-gray-600 mb-1\">Tinggi Badan (cm)</label>\n            <input \n              type=\"number\" \n              value={height} \n              onChange={(e) => setHeight(e.target.value)}\n              className=\"w-full p-3 rounded-2xl border border-pink-100 focus:ring-2 focus:ring-pink-300 outline-none\"\n              placeholder=\"e.g. 160\"\n            />\n          </div>\n        </div>\n\n        <button \n          onClick={calculateBMI}\n          className=\"w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 rounded-2xl transition-all active:scale-95\"\n        >\n          Hitung Sekarang\n        </button>\n\n        {result && (\n          <div className=\"mt-6 p-4 bg-pink-50 rounded-2xl border border-pink-100 text-center animate-bounce-subtle\">\n            <p className=\"text-sm text-pink-600 font-medium\">Hasil IMT Anda:</p>\n            <p className=\"text-4xl font-black text-pink-700 my-1\">{result.bmi}</p>\n            <p className=\"text-lg font-semibold text-pink-800\">{result.category}</p>\n            <p className=\"text-xs text-pink-500 mt-2 italic\">\n              *Catatan: Ibu menyusui memerlukan asupan kalori yang cukup. Jangan melakukan diet ketat tanpa pengawasan dokter.\n            </p>\n          </div>\n        )}\n      </div>\n\n      <div className=\"glass-card p-6 rounded-3xl shadow-sm\">\n        <div className=\"flex items-center gap-3 mb-4\">\n          <History className=\"text-gray-400\" size={20} />\n          <h3 className=\"font-bold text-gray-700\">Riwayat Pengukuran</h3>\n        </div>\n        \n        {history.length === 0 ? (\n          <p className=\"text-gray-400 text-sm text-center py-4 italic\">Belum ada riwayat</p>\n        ) : (\n          <div className=\"space-y-3\">\n            {history.slice(0, 5).map((h, i) => (\n              <div key={i} className=\"flex justify-between items-center p-3 bg-white rounded-xl border border-gray-50\">\n                <div>\n                  <p className=\"font-bold text-gray-800\">{h.bmi} <span className=\"text-xs font-normal text-gray-500\">({h.category})</span></p>\n                  <p className=\"text-xs text-gray-400\">{h.date}</p>\n                </div>\n                <p className=\"text-sm text-gray-600\">{h.weight}kg / {h.height}cm</p>\n              </div>\n            ))}\n          </div>\n        )}\n      </div>\n    </div>\n  );\n};\n\nexport default BMISection;\n"
+            }
+          ]
+        },
+        {
+          "path": "components/TrackerSection.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Nursing log tracker component.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport React, { useState, useEffect } from 'react';\nimport { storage } from '../services/storage';\nimport { NursingLog } from '../types';\nimport { Plus, Timer, Trash2, Calendar } from 'lucide-react';\n\nconst TrackerSection: React.FC = () => {\n  const [logs, setLogs] = useState<NursingLog[]>([]);\n  const [isAdding, setIsAdding] = useState(false);\n  const [duration, setDuration] = useState('15');\n  const [side, setSide] = useState<'Left' | 'Right' | 'Both'>('Both');\n  const [note, setNote] = useState('');\n\n  useEffect(() => {\n    setLogs(storage.getLogs());\n  }, []);\n\n  const handleAddLog = () => {\n    const newLog: NursingLog = {\n      id: Date.now().toString(),\n      timestamp: new Date().toISOString(),\n      duration: parseInt(duration),\n      side,\n      note\n    };\n    storage.saveLog(newLog);\n    setLogs(storage.getLogs());\n    setIsAdding(false);\n    setNote('');\n  };\n\n  const handleDelete = (id: string) => {\n    storage.deleteLog(id);\n    setLogs(storage.getLogs());\n  };\n\n  return (\n    <div className=\"space-y-4 pb-24\">\n      <div className=\"flex justify-between items-center mb-2\">\n        <h2 className=\"text-2xl font-bold text-gray-800\">Catatan Menyusui</h2>\n        <button \n          onClick={() => setIsAdding(!isAdding)}\n          className=\"bg-pink-500 text-white p-3 rounded-full shadow-lg shadow-pink-200 active:scale-90 transition-transform\"\n        >\n          <Plus size={24} />\n        </button>\n      </div>\n\n      {isAdding && (\n        <div className=\"glass-card p-6 rounded-3xl shadow-md border-pink-100 animate-slide-up\">\n          <h3 className=\"font-bold text-gray-800 mb-4\">Tambah Sesi Baru</h3>\n          <div className=\"space-y-4\">\n            <div>\n              <label className=\"block text-xs font-bold text-pink-600 uppercase mb-2\">Durasi (Menit)</label>\n              <div className=\"flex items-center gap-4\">\n                <input \n                  type=\"range\" min=\"1\" max=\"60\" \n                  value={duration}\n                  onChange={(e) => setDuration(e.target.value)}\n                  className=\"w-full accent-pink-500\"\n                />\n                <span className=\"font-bold text-pink-700 w-12\">{duration}m</span>\n              </div>\n            </div>\n\n            <div>\n              <label className=\"block text-xs font-bold text-pink-600 uppercase mb-2\">Sisi Payudara</label>\n              <div className=\"grid grid-cols-3 gap-2\">\n                {(['Left', 'Right', 'Both'] as const).map(s => (\n                  <button\n                    key={s}\n                    onClick={() => setSide(s)}\n                    className={`py-2 rounded-xl text-sm font-medium border transition-all ${\n                      side === s ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-600 border-gray-100'\n                    }`}\n                  >\n                    {s === 'Left' ? 'Kiri' : s === 'Right' ? 'Kanan' : 'Keduanya'}\n                  </button>\n                ))}\n              </div>\n            </div>\n\n            <div>\n              <label className=\"block text-xs font-bold text-pink-600 uppercase mb-2\">Catatan Tambahan</label>\n              <textarea \n                value={note}\n                onChange={(e) => setNote(e.target.value)}\n                placeholder=\"Misal: Bayi mengantuk, pelekatan bagus...\"\n                className=\"w-full p-3 rounded-xl border border-gray-100 outline-none text-sm h-20\"\n              />\n            </div>\n\n            <div className=\"flex gap-2 pt-2\">\n              <button \n                onClick={() => setIsAdding(false)}\n                className=\"flex-1 py-3 rounded-xl bg-gray-100 text-gray-600 font-bold\"\n              >\n                Batal\n              </button>\n              <button \n                onClick={handleAddLog}\n                className=\"flex-1 py-3 rounded-xl bg-pink-500 text-white font-bold\"\n              >\n                Simpan\n              </button>\n            </div>\n          </div>\n        </div>\n      )}\n\n      <div className=\"space-y-3\">\n        {logs.length === 0 ? (\n          <div className=\"text-center py-12\">\n            <div className=\"bg-pink-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-pink-300\">\n              <Timer size={40} />\n            </div>\n            <p className=\"text-gray-400\">Mulai catat sesi menyusui Mama hari ini!</p>\n          </div>\n        ) : (\n          logs.map((log) => (\n            <div key={log.id} className=\"glass-card p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow group border-white\">\n              <div className=\"flex justify-between items-start\">\n                <div className=\"flex gap-3\">\n                  <div className=\"bg-pink-100 text-pink-600 p-2.5 rounded-xl h-fit\">\n                    <Timer size={20} />\n                  </div>\n                  <div>\n                    <h4 className=\"font-bold text-gray-800\">{log.duration} Menit</h4>\n                    <p className=\"text-xs text-gray-500 flex items-center gap-1\">\n                      <Calendar size={12} /> {new Date(log.timestamp).toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}\n                    </p>\n                    <div className=\"mt-1 flex gap-2\">\n                      <span className=\"text-[10px] bg-pink-50 text-pink-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider\">\n                        {log.side === 'Left' ? 'Kiri' : log.side === 'Right' ? 'Kanan' : 'Kedua Sisi'}\n                      </span>\n                    </div>\n                    {log.note && <p className=\"mt-2 text-sm text-gray-600 italic\">\"{log.note}\"</p>}\n                  </div>\n                </div>\n                <button \n                  onClick={() => handleDelete(log.id)}\n                  className=\"text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100\"\n                >\n                  <Trash2 size={18} />\n                </button>\n              </div>\n            </div>\n          ))\n        )}\n      </div>\n    </div>\n  );\n};\n\nexport default TrackerSection;\n"
+            }
+          ]
+        },
+        {
+          "path": "App.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Main application component with tab navigation and state management.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport React, { useState, useEffect } from 'react';\nimport { \n  Home, \n  BookOpen, \n  Activity, \n  Calculator, \n  MessageCircleHeart,\n  ChevronRight,\n  TrendingUp,\n  Clock,\n  Heart\n} from 'lucide-react';\nimport { AppTab, EducationArticle } from './types';\nimport { EDUCATION_ARTICLES, getIcon } from './constants';\nimport TrackerSection from './components/TrackerSection';\nimport BMISection from './components/BMISection';\nimport { askMamaBot } from './services/geminiService';\nimport { storage } from './services/storage';\n\nconst App: React.FC = () => {\n  const [activeTab, setActiveTab] = useState<AppTab>(AppTab.DASHBOARD);\n  const [selectedArticle, setSelectedArticle] = useState<EducationArticle | null>(null);\n  const [chatMessage, setChatMessage] = useState('');\n  const [chatHistory, setChatHistory] = useState<{ role: 'user' | 'bot', text: string }[]>([]);\n  const [isTyping, setIsTyping] = useState(false);\n  const [summary, setSummary] = useState({ count: 0, totalTime: 0 });\n\n  useEffect(() => {\n    const logs = storage.getLogs();\n    const today = new Date().toDateString();\n    const todaysLogs = logs.filter(l => new Date(l.timestamp).toDateString() === today);\n    setSummary({\n      count: todaysLogs.length,\n      totalTime: todaysLogs.reduce((acc, curr) => acc + curr.duration, 0)\n    });\n  }, [activeTab]);\n\n  const handleSendMessage = async () => {\n    if (!chatMessage.trim()) return;\n    \n    const userMsg = chatMessage;\n    setChatHistory(prev => [...prev, { role: 'user', text: userMsg }]);\n    setChatMessage('');\n    setIsTyping(true);\n    \n    const response = await askMamaBot(userMsg);\n    setChatHistory(prev => [...prev, { role: 'bot', text: response }]);\n    setIsTyping(false);\n  };\n\n  const renderDashboard = () => (\n    <div className=\"space-y-6 animate-fade-in\">\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <h1 className=\"text-2xl font-black text-gray-800\">Halo, Bunda! 🌸</h1>\n          <p className=\"text-gray-500 text-sm\">Semangat mengASIhi hari ini.</p>\n        </div>\n        <div className=\"w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-500\">\n          <Heart fill=\"currentColor\" size={24} />\n        </div>\n      </div>\n\n      <div className=\"grid grid-cols-2 gap-4\">\n        <div className=\"bg-gradient-to-br from-pink-400 to-rose-400 p-5 rounded-3xl text-white shadow-lg shadow-pink-100\">\n          <div className=\"flex justify-between items-start mb-4\">\n            <Activity size={24} />\n            <span className=\"text-[10px] bg-white/20 px-2 py-0.5 rounded-full\">HARI INI</span>\n          </div>\n          <p className=\"text-3xl font-bold\">{summary.count}</p>\n          <p className=\"text-xs opacity-80\">Sesi Menyusui</p>\n        </div>\n        <div className=\"bg-gradient-to-br from-indigo-400 to-blue-400 p-5 rounded-3xl text-white shadow-lg shadow-blue-100\">\n          <div className=\"flex justify-between items-start mb-4\">\n            <Clock size={24} />\n            <span className=\"text-[10px] bg-white/20 px-2 py-0.5 rounded-full\">DURASI</span>\n          </div>\n          <p className=\"text-3xl font-bold\">{summary.totalTime}</p>\n          <p className=\"text-xs opacity-80\">Total Menit</p>\n        </div>\n      </div>\n\n      <div className=\"space-y-4\">\n        <div className=\"flex items-center justify-between\">\n          <h3 className=\"font-bold text-gray-800\">Materi Rekomendasi</h3>\n          <button onClick={() => setActiveTab(AppTab.EDUCATION)} className=\"text-pink-500 text-xs font-bold flex items-center gap-1\">\n            Lihat Semua <ChevronRight size={14} />\n          </button>\n        </div>\n        <div className=\"space-y-3\">\n          {EDUCATION_ARTICLES.slice(0, 2).map((article) => (\n            <button \n              key={article.id}\n              onClick={() => { setSelectedArticle(article); setActiveTab(AppTab.EDUCATION); }}\n              className=\"w-full flex items-center gap-4 bg-white p-4 rounded-2xl border border-gray-100 hover:border-pink-200 transition-colors text-left\"\n            >\n              <div className=\"p-3 bg-pink-50 text-pink-500 rounded-xl\">\n                {getIcon(article.icon)}\n              </div>\n              <div className=\"flex-1\">\n                <span className=\"text-[10px] font-bold text-pink-400 uppercase tracking-widest\">{article.category}</span>\n                <h4 className=\"font-bold text-gray-800 leading-tight\">{article.title}</h4>\n              </div>\n              <ChevronRight size={18} className=\"text-gray-300\" />\n            </button>\n          ))}\n        </div>\n      </div>\n\n      <div className=\"bg-pink-50 p-6 rounded-3xl border border-pink-100 relative overflow-hidden group\">\n        <div className=\"relative z-10\">\n          <h3 className=\"text-pink-800 font-bold mb-1\">Ada pertanyaan?</h3>\n          <p className=\"text-pink-600 text-sm mb-4\">Tanya MamaBot asisten laktasi AI pintar.</p>\n          <button \n            onClick={() => setActiveTab(AppTab.AI_CONSULT)}\n            className=\"bg-pink-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md active:scale-95 transition-transform\"\n          >\n            Konsultasi Sekarang\n          </button>\n        </div>\n        <div className=\"absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform\">\n          <MessageCircleHeart size={120} />\n        </div>\n      </div>\n    </div>\n  );\n\n  const renderEducation = () => (\n    <div className=\"space-y-4 animate-fade-in\">\n      {!selectedArticle ? (\n        <>\n          <h2 className=\"text-2xl font-black text-gray-800 mb-6\">Pusat Edukasi ASI</h2>\n          <div className=\"grid gap-4\">\n            {EDUCATION_ARTICLES.map((article) => (\n              <button \n                key={article.id}\n                onClick={() => setSelectedArticle(article)}\n                className=\"w-full flex items-center gap-4 bg-white p-5 rounded-3xl border border-gray-100 text-left hover:shadow-sm\"\n              >\n                <div className=\"p-4 bg-pink-50 text-pink-500 rounded-2xl\">\n                  {getIcon(article.icon)}\n                </div>\n                <div>\n                  <span className=\"text-[10px] font-bold text-pink-400 uppercase tracking-widest\">{article.category}</span>\n                  <h4 className=\"font-bold text-gray-800 text-lg\">{article.title}</h4>\n                </div>\n              </button>\n            ))}\n          </div>\n        </>\n      ) : (\n        <div className=\"animate-slide-right pb-24\">\n          <button \n            onClick={() => setSelectedArticle(null)}\n            className=\"text-pink-500 font-bold mb-6 flex items-center gap-1\"\n          >\n            ← Kembali ke Materi\n          </button>\n          <div className=\"glass-card p-8 rounded-[40px] shadow-sm\">\n            <div className=\"p-4 bg-pink-50 text-pink-500 rounded-3xl w-fit mb-6\">\n              {getIcon(selectedArticle.icon)}\n            </div>\n            <h2 className=\"text-3xl font-black text-gray-800 mb-4 leading-tight\">{selectedArticle.title}</h2>\n            <div className=\"prose prose-pink\">\n              <p className=\"text-gray-600 leading-relaxed whitespace-pre-line text-lg\">\n                {selectedArticle.content}\n              </p>\n            </div>\n          </div>\n        </div>\n      )}\n    </div>\n  );\n\n  const renderAIConsult = () => (\n    <div className=\"flex flex-col h-[calc(100vh-180px)] animate-fade-in\">\n      <div className=\"flex items-center gap-3 mb-4\">\n        <div className=\"w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white\">\n          <MessageCircleHeart size={20} />\n        </div>\n        <div>\n          <h2 className=\"font-bold text-gray-800\">MamaBot AI</h2>\n          <p className=\"text-[10px] text-green-500 font-bold flex items-center gap-1\">\n            <span className=\"w-1.5 h-1.5 bg-green-500 rounded-full\"></span> Online\n          </p>\n        </div>\n      </div>\n\n      <div className=\"flex-1 overflow-y-auto space-y-4 mb-4 pr-2 custom-scrollbar\">\n        {chatHistory.length === 0 ? (\n          <div className=\"text-center py-10 px-6\">\n            <p className=\"text-gray-400 text-sm\">Tanyakan apa saja seputar menyusui, misalnya: <br/> \"Bagaimana cara mengatasi payudara bengkak?\"</p>\n          </div>\n        ) : (\n          chatHistory.map((chat, i) => (\n            <div key={i} className={`flex ${chat.role === 'user' ? 'justify-end' : 'justify-start'}`}>\n              <div className={`max-w-[85%] p-4 rounded-2xl ${\n                chat.role === 'user' \n                  ? 'bg-pink-500 text-white rounded-tr-none' \n                  : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none shadow-sm'\n              }`}>\n                <p className=\"text-sm leading-relaxed\">{chat.text}</p>\n              </div>\n            </div>\n          ))\n        )}\n        {isTyping && (\n          <div className=\"flex justify-start\">\n            <div className=\"bg-white p-4 rounded-2xl rounded-tl-none border border-gray-100 flex gap-1 items-center\">\n              <div className=\"w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce\"></div>\n              <div className=\"w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.2s]\"></div>\n              <div className=\"w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.4s]\"></div>\n            </div>\n          </div>\n        )}\n      </div>\n\n      <div className=\"relative\">\n        <input \n          type=\"text\"\n          value={chatMessage}\n          onChange={(e) => setChatMessage(e.target.value)}\n          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}\n          placeholder=\"Tanya MamaBot...\"\n          className=\"w-full p-4 pr-14 rounded-2xl border border-pink-100 outline-none focus:ring-2 focus:ring-pink-300 transition-all bg-white shadow-lg shadow-pink-50\"\n        />\n        <button \n          onClick={handleSendMessage}\n          disabled={!chatMessage.trim() || isTyping}\n          className=\"absolute right-2 top-2 bg-pink-500 text-white p-2 rounded-xl active:scale-90 transition-transform disabled:opacity-50\"\n        >\n          <ChevronRight size={24} />\n        </button>\n      </div>\n    </div>\n  );\n\n  return (\n    <div className=\"max-w-md mx-auto min-h-screen pb-24 px-5 pt-6 relative overflow-x-hidden\">\n      {activeTab === AppTab.DASHBOARD && renderDashboard()}\n      {activeTab === AppTab.EDUCATION && renderEducation()}\n      {activeTab === AppTab.TRACKER && <TrackerSection />}\n      {activeTab === AppTab.HEALTH && <BMISection />}\n      {activeTab === AppTab.AI_CONSULT && renderAIConsult()}\n\n      {/* Floating Bottom Navigation */}\n      <nav className=\"fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass-card border-white/50 shadow-2xl rounded-[32px] px-2 py-3 flex items-center justify-around z-50\">\n        <button \n          onClick={() => { setActiveTab(AppTab.DASHBOARD); setSelectedArticle(null); }}\n          className={`flex flex-col items-center gap-1 p-2 rounded-2xl transition-all ${activeTab === AppTab.DASHBOARD ? 'text-pink-500' : 'text-gray-400'}`}\n        >\n          <Home size={22} strokeWidth={activeTab === AppTab.DASHBOARD ? 3 : 2} />\n          <span className=\"text-[10px] font-bold\">Beranda</span>\n        </button>\n        <button \n          onClick={() => { setActiveTab(AppTab.EDUCATION); setSelectedArticle(null); }}\n          className={`flex flex-col items-center gap-1 p-2 rounded-2xl transition-all ${activeTab === AppTab.EDUCATION ? 'text-pink-500' : 'text-gray-400'}`}\n        >\n          <BookOpen size={22} strokeWidth={activeTab === AppTab.EDUCATION ? 3 : 2} />\n          <span className=\"text-[10px] font-bold\">Materi</span>\n        </button>\n        <button \n          onClick={() => setActiveTab(AppTab.TRACKER)}\n          className={`flex flex-col items-center gap-1 p-2 rounded-2xl transition-all ${activeTab === AppTab.TRACKER ? 'text-pink-500' : 'text-gray-400'}`}\n        >\n          <Activity size={22} strokeWidth={activeTab === AppTab.TRACKER ? 3 : 2} />\n          <span className=\"text-[10px] font-bold\">Tracker</span>\n        </button>\n        <button \n          onClick={() => setActiveTab(AppTab.HEALTH)}\n          className={`flex flex-col items-center gap-1 p-2 rounded-2xl transition-all ${activeTab === AppTab.HEALTH ? 'text-pink-500' : 'text-gray-400'}`}\n        >\n          <Calculator size={22} strokeWidth={activeTab === AppTab.HEALTH ? 3 : 2} />\n          <span className=\"text-[10px] font-bold\">IMT</span>\n        </button>\n        <button \n          onClick={() => setActiveTab(AppTab.AI_CONSULT)}\n          className={`flex flex-col items-center gap-1 p-2 rounded-2xl transition-all ${activeTab === AppTab.AI_CONSULT ? 'text-pink-500' : 'text-gray-400'}`}\n        >\n          <MessageCircleHeart size={22} strokeWidth={activeTab === AppTab.AI_CONSULT ? 3 : 2} />\n          <span className=\"text-[10px] font-bold\">Konsul</span>\n        </button>\n      </nav>\n\n      <style>{`\n        @keyframes fadeIn {\n          from { opacity: 0; transform: translateY(10px); }\n          to { opacity: 1; transform: translateY(0); }\n        }\n        @keyframes slideRight {\n          from { opacity: 0; transform: translateX(20px); }\n          to { opacity: 1; transform: translateX(0); }\n        }\n        @keyframes slideUp {\n          from { opacity: 0; transform: translateY(20px); }\n          to { opacity: 1; transform: translateY(0); }\n        }\n        @keyframes bounceSubtle {\n          0%, 100% { transform: translateY(0); }\n          50% { transform: translateY(-5px); }\n        }\n        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }\n        .animate-slide-right { animation: slideRight 0.4s ease-out forwards; }\n        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }\n        .animate-bounce-subtle { animation: bounceSubtle 2s infinite ease-in-out; }\n        .custom-scrollbar::-webkit-scrollbar { width: 4px; }\n        .custom-scrollbar::-webkit-scrollbar-thumb { background: #fce7f3; border-radius: 10px; }\n      `}</style>\n    </div>\n  );\n};\n\nexport default App;\n"
+            }
+          ]
+        }
+      ]
+    },
+    "createdTimestamp": {
+      "seconds": 1769754963,
+      "nanos": 959000000
+    },
+    "doneTimestamp": {
+      "seconds": 1769754964,
+      "nanos": 799000000
+    }
+  },
+  {
+    "id": 3,
+    "author": "user",
+    "payload": {
+      "type": "text",
+      "text": "itu bagus, pada tracker tolong tambahkan range tanggal untuk mensortir",
+      "files": [],
+      "fileUploads": [],
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1769783142,
+      "nanos": 62000000
+    }
+  },
+  {
+    "id": 4,
+    "author": "model",
+    "payload": {
+      "type": "thinking",
+      "text": "**Implementing Date Range Filter**\n\nOkay, I'm currently focused on integrating a date range filter into the `TrackerSection` component. I see the logs are rendered there and the core logic for managing them. I will also need to think about how this affects the storage of these logs. I am anticipating needing to modify `TrackerSection.tsx` and likely `storage.ts`.\n\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1769783142,
+      "nanos": 62000000
+    },
+    "doneTimestamp": {
+      "seconds": 1769783147,
+      "nanos": 456000000
+    }
+  },
+  {
+    "id": 5,
+    "author": "model",
+    "payload": {
+      "type": "text",
+      "text": "I akan memperbarui **MamaNutri** untuk menyertakan fitur filter rentang tanggal pada halaman **Tracker**. Ini akan memudahkan Bunda untuk melihat riwayat menyusui dalam periode tertentu (misalnya mingguan atau bulanan).\n\n### Rencana Pembaruan:\n1.  **UI Filter Tanggal**: Menambahkan dua input tanggal (\"Dari\" dan \"Sampai\") di bagian atas daftar catatan.\n2.  **Logika Filtering**: Menambahkan fungsi untuk menyaring data `logs` berdasarkan rentang waktu yang dipilih pengguna.\n3.  **Visual Aesthetic**: Menggunakan desain kartu transparan (glass-card) yang konsisten dengan tema pink lembut aplikasi.\n4.  **Tombol Reset**: Menambahkan tombol untuk menghapus filter dengan cepat.\n\nBerikut adalah perubahan kodenya:\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1769783147,
+      "nanos": 457000000
+    },
+    "doneTimestamp": {
+      "seconds": 1769783147,
+      "nanos": 614000000
+    }
+  },
+  {
+    "id": 6,
+    "author": "model",
+    "payload": {
+      "type": "generationTable",
+      "entries": [
+        {
+          "path": "components/TrackerSection.tsx",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Menambahkan fitur filter rentang tanggal untuk menyortir catatan menyusui.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport React, { useState, useEffect, useMemo } from 'react';\nimport { storage } from '../services/storage';\nimport { NursingLog } from '../types';\nimport { Plus, Timer, Trash2, Calendar, Filter, X } from 'lucide-react';\n\nconst TrackerSection: React.FC = () => {\n  const [logs, setLogs] = useState<NursingLog[]>([]);\n  const [isAdding, setIsAdding] = useState(false);\n  const [duration, setDuration] = useState('15');\n  const [side, setSide] = useState<'Left' | 'Right' | 'Both'>('Both');\n  const [note, setNote] = useState('');\n\n  // Filter states\n  const [startDate, setStartDate] = useState<string>('');\n  const [endDate, setEndDate] = useState<string>('');\n  const [showFilters, setShowFilters] = useState(false);\n\n  useEffect(() => {\n    setLogs(storage.getLogs());\n  }, []);\n\n  const handleAddLog = () => {\n    const newLog: NursingLog = {\n      id: Date.now().toString(),\n      timestamp: new Date().toISOString(),\n      duration: parseInt(duration),\n      side,\n      note\n    };\n    storage.saveLog(newLog);\n    setLogs(storage.getLogs());\n    setIsAdding(false);\n    setNote('');\n  };\n\n  const handleDelete = (id: string) => {\n    storage.deleteLog(id);\n    setLogs(storage.getLogs());\n  };\n\n  const filteredLogs = useMemo(() => {\n    return logs.filter(log => {\n      const logDate = new Date(log.timestamp).setHours(0, 0, 0, 0);\n      const start = startDate ? new Date(startDate).setHours(0, 0, 0, 0) : null;\n      const end = endDate ? new Date(endDate).setHours(23, 59, 59, 999) : null;\n\n      if (start && logDate < start) return false;\n      if (end && logDate > end) return false;\n      return true;\n    });\n  }, [logs, startDate, endDate]);\n\n  const resetFilters = () => {\n    setStartDate('');\n    setEndDate('');\n  };\n\n  return (\n    <div className=\"space-y-4 pb-24\">\n      <div className=\"flex justify-between items-center mb-2\">\n        <div>\n          <h2 className=\"text-2xl font-bold text-gray-800\">Catatan Menyusui</h2>\n          <p className=\"text-xs text-gray-500\">Total: {filteredLogs.length} catatan</p>\n        </div>\n        <div className=\"flex gap-2\">\n          <button \n            onClick={() => setShowFilters(!showFilters)}\n            className={`p-3 rounded-full transition-all ${showFilters || startDate || endDate ? 'bg-pink-100 text-pink-600' : 'bg-white text-gray-400 border border-gray-100'}`}\n          >\n            <Filter size={20} />\n          </button>\n          <button \n            onClick={() => setIsAdding(!isAdding)}\n            className=\"bg-pink-500 text-white p-3 rounded-full shadow-lg shadow-pink-200 active:scale-90 transition-transform\"\n          >\n            <Plus size={24} />\n          </button>\n        </div>\n      </div>\n\n      {/* Date Filters UI */}\n      {showFilters && (\n        <div className=\"glass-card p-4 rounded-3xl border-pink-100 animate-fade-in space-y-3\">\n          <div className=\"flex items-center justify-between mb-1\">\n            <span className=\"text-xs font-bold text-gray-600 uppercase\">Filter Tanggal</span>\n            {(startDate || endDate) && (\n              <button onClick={resetFilters} className=\"text-[10px] text-pink-500 font-bold flex items-center gap-1\">\n                <X size={12} /> Reset\n              </button>\n            )}\n          </div>\n          <div className=\"grid grid-cols-2 gap-3\">\n            <div>\n              <label className=\"block text-[10px] text-gray-400 mb-1\">Dari</label>\n              <input \n                type=\"date\" \n                value={startDate}\n                onChange={(e) => setStartDate(e.target.value)}\n                className=\"w-full text-xs p-2 rounded-xl border border-gray-100 outline-none focus:border-pink-300\"\n              />\n            </div>\n            <div>\n              <label className=\"block text-[10px] text-gray-400 mb-1\">Sampai</label>\n              <input \n                type=\"date\" \n                value={endDate}\n                onChange={(e) => setEndDate(e.target.value)}\n                className=\"w-full text-xs p-2 rounded-xl border border-gray-100 outline-none focus:border-pink-300\"\n              />\n            </div>\n          </div>\n        </div>\n      )}\n\n      {isAdding && (\n        <div className=\"glass-card p-6 rounded-3xl shadow-md border-pink-100 animate-slide-up\">\n          <h3 className=\"font-bold text-gray-800 mb-4\">Tambah Sesi Baru</h3>\n          <div className=\"space-y-4\">\n            <div>\n              <label className=\"block text-xs font-bold text-pink-600 uppercase mb-2\">Durasi (Menit)</label>\n              <div className=\"flex items-center gap-4\">\n                <input \n                  type=\"range\" min=\"1\" max=\"60\" \n                  value={duration}\n                  onChange={(e) => setDuration(e.target.value)}\n                  className=\"w-full accent-pink-500\"\n                />\n                <span className=\"font-bold text-pink-700 w-12\">{duration}m</span>\n              </div>\n            </div>\n\n            <div>\n              <label className=\"block text-xs font-bold text-pink-600 uppercase mb-2\">Sisi Payudara</label>\n              <div className=\"grid grid-cols-3 gap-2\">\n                {(['Left', 'Right', 'Both'] as const).map(s => (\n                  <button\n                    key={s}\n                    onClick={() => setSide(s)}\n                    className={`py-2 rounded-xl text-sm font-medium border transition-all ${\n                      side === s ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-600 border-gray-100'\n                    }`}\n                  >\n                    {s === 'Left' ? 'Kiri' : s === 'Right' ? 'Kanan' : 'Keduanya'}\n                  </button>\n                ))}\n              </div>\n            </div>\n\n            <div>\n              <label className=\"block text-xs font-bold text-pink-600 uppercase mb-2\">Catatan Tambahan</label>\n              <textarea \n                value={note}\n                onChange={(e) => setNote(e.target.value)}\n                placeholder=\"Misal: Bayi mengantuk, pelekatan bagus...\"\n                className=\"w-full p-3 rounded-xl border border-gray-100 outline-none text-sm h-20\"\n              />\n            </div>\n\n            <div className=\"flex gap-2 pt-2\">\n              <button \n                onClick={() => setIsAdding(false)}\n                className=\"flex-1 py-3 rounded-xl bg-gray-100 text-gray-600 font-bold\"\n              >\n                Batal\n              </button>\n              <button \n                onClick={handleAddLog}\n                className=\"flex-1 py-3 rounded-xl bg-pink-500 text-white font-bold\"\n              >\n                Simpan\n              </button>\n            </div>\n          </div>\n        </div>\n      )}\n\n      <div className=\"space-y-3\">\n        {filteredLogs.length === 0 ? (\n          <div className=\"text-center py-12\">\n            <div className=\"bg-pink-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-pink-300\">\n              <Calendar size={40} />\n            </div>\n            <p className=\"text-gray-400\">Tidak ada catatan pada rentang ini.</p>\n            {(startDate || endDate) && (\n              <button onClick={resetFilters} className=\"text-pink-500 text-sm font-bold mt-2\">Hapus Filter</button>\n            )}\n          </div>\n        ) : (\n          filteredLogs.map((log) => (\n            <div key={log.id} className=\"glass-card p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow group border-white\">\n              <div className=\"flex justify-between items-start\">\n                <div className=\"flex gap-3\">\n                  <div className=\"bg-pink-100 text-pink-600 p-2.5 rounded-xl h-fit\">\n                    <Timer size={20} />\n                  </div>\n                  <div>\n                    <h4 className=\"font-bold text-gray-800\">{log.duration} Menit</h4>\n                    <p className=\"text-xs text-gray-500 flex items-center gap-1\">\n                      <Calendar size={12} /> {new Date(log.timestamp).toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short', year: 'numeric' })}\n                    </p>\n                    <div className=\"mt-1 flex gap-2\">\n                      <span className=\"text-[10px] bg-pink-50 text-pink-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider\">\n                        {log.side === 'Left' ? 'Kiri' : log.side === 'Right' ? 'Kanan' : 'Kedua Sisi'}\n                      </span>\n                    </div>\n                    {log.note && <p className=\"mt-2 text-sm text-gray-600 italic\">\"{log.note}\"</p>}\n                  </div>\n                </div>\n                <button \n                  onClick={() => handleDelete(log.id)}\n                  className=\"text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100\"\n                >\n                  <Trash2 size={18} />\n                </button>\n              </div>\n            </div>\n          ))\n        )}\n      </div>\n    </div>\n  );\n};\n\nexport default TrackerSection;\n"
+            }
+          ]
+        }
+      ]
+    },
+    "createdTimestamp": {
+      "seconds": 1769783149,
+      "nanos": 205000000
+    },
+    "doneTimestamp": {
+      "seconds": 1769783163,
+      "nanos": 442000000
+    }
+  },
+  {
+    "id": 7,
+    "author": "user",
+    "payload": {
+      "type": "text",
+      "text": "tambahkan login page dan daftar akun yang mencakup nomor hp, nama , password saja, untuk login menggunakan no hp dan password. hapus tab konsul pada bottom menu dan ganti menjadi profil akun pengguna. login/resgist page akan terhubung dengan endpoint website php untuk menyimpan dan menarik data. buat konfigurasi untuk mode debug, jika true saya login hanya perlu memasukkan no hp = 123 dan password 123, jika mode debug false baru akan memakai endpoint. pada beranda untuk konsultasi tidak menggunakan bot melainkan akan membuka website tertentu, tombol \"konsultasi sekarang\" pada beranda akan membuka website yang saya tentukan nanti. pada beranda saya tidak memerlukan materi rekomendasi, ganti dengan list beberapa video rekomendasi yang asalnya dari youtube. tetap biarkan tab materi untuk pusat edukasi.",
+      "files": [],
+      "fileUploads": [],
+      "cssBlocks": [],
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770723143,
+      "nanos": 679000000
+    }
+  },
+  {
+    "id": 8,
+    "author": "model",
+    "payload": {
+      "type": "thinking",
+      "text": "**Developing App Authentication**\n\nI'm currently focused on implementing user authentication for the \"MamaNutri\" app. I've begun designing the login and registration pages, including fields for phone number, name, and password. I'm also working to establish the connection to the PHP website endpoint for data synchronization, specifically handling login, registration, saving, and loading user data. For debugging, I'll allow login with the phone number \"12\" when DEBUG_MODE is enabled.\n\n\n**Refining App Structure**\n\nI'm now prioritizing the restructuring of the MamaNutri app. I'm focusing on updating `types.ts` with a `User` interface, and updating `services/storage.ts` to manage user data and sessions. Concurrently, I'm introducing `services/api.ts` to interact with the PHP endpoint, incorporating the `DEBUG_MODE` functionality. I'm also planning to rework `App.tsx` significantly to include authentication, a new UI for login/registration, updated dashboard features (including YouTube videos and a \"Consult\" button to open external URLs), as well as changes to the bottom navigation, replacing the \"Konsul\" tab with \"Profil\" and implementing a Profile page. Lastly, I'll review and test `TrackerSection.tsx` and `BMISection.tsx`.\n\n\n**Defining App Configuration**\n\nI'm now establishing a configuration object for `DEBUG_MODE`, the PHP endpoint placeholder, and the consultation URL placeholder, defining `DEBUG_MODE` to default to `true`. I'll also add a few context properties to track user login: `isLoggedIn` (boolean) and `user` (an object that may contain name, phone and password, or null). I'll also be creating the login and register UI fields, including their structure and behavior. Additionally, I'll be implementing the YouTube list, and integrating the consultation button via window.open.\n\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770723143,
+      "nanos": 679000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770723160,
+      "nanos": 772000000
+    }
+  },
+  {
+    "id": 9,
+    "author": "model",
+    "payload": {
+      "type": "text",
+      "text": "I akan merombak aplikasi **MamaNutri** sesuai permintaan Anda. Berikut adalah spesifikasi pembaruannya:\n\n### Spesifikasi Pembaruan:\n1.  **Sistem Otentikasi**: \n    - Menambahkan `LoginPage` dan `RegisterPage`.\n    - Data yang dibutuhkan: Nama, Nomor HP, dan Password.\n    - Login menggunakan Nomor HP dan Password.\n2.  **Mode Debug & API Integration**:\n    - Variabel `DEBUG_MODE` di `config.ts`. Jika `true`, login `123/123` akan berhasil otomatis.\n    - Jika `false`, akan melakukan `fetch` ke endpoint PHP yang Anda tentukan.\n3.  **Restrukturasi Menu & Navigasi**:\n    - Menghapus tab \"Konsul\" (AI).\n    - Menambahkan tab \"Profil\" yang menampilkan data pengguna dan tombol Logout.\n4.  **Pembaruan Beranda (Dashboard)**:\n    - Menghapus \"Materi Rekomendasi\".\n    - Menambahkan \"Video Rekomendasi\" (list video YouTube).\n    - Tombol \"Konsultasi Sekarang\" akan membuka link eksternal (misalnya WhatsApp atau Website Konselor).\n5.  **Pusat Edukasi**: Tetap dipertahankan di tab \"Materi\".\n\nBerikut kodenya:\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770723160,
+      "nanos": 773000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770723160,
+      "nanos": 881000000
+    }
+  },
+  {
+    "id": 10,
+    "author": "model",
+    "payload": {
+      "type": "generationTable",
+      "entries": [
+        {
+          "path": "config.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Konfigurasi aplikasi untuk mode debug dan endpoint.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nexport const CONFIG = {\n  DEBUG_MODE: true, // Ubah ke false untuk menggunakan endpoint PHP\n  API_BASE_URL: 'https://website-anda.com/api', // Ganti dengan URL endpoint PHP Anda\n  CONSULTATION_EXTERNAL_URL: 'https://wa.me/628123456789', // Ganti dengan link tujuan konsultasi\n};\n"
+            }
+          ]
+        },
+        {
+          "path": "types.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Update types untuk menyertakan data User dan Tab Profil.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nexport interface User {\n  name: string;\n  phone: string;\n  password?: string;\n}\n\nexport interface NursingLog {\n  id: string;\n  timestamp: string;\n  duration: number;\n  side: 'Left' | 'Right' | 'Both';\n  note?: string;\n}\n\nexport interface BMIData {\n  weight: number;\n  height: number;\n  bmi: number;\n  category: string;\n  date: string;\n}\n\nexport interface EducationArticle {\n  id: string;\n  title: string;\n  category: 'Dasar' | 'Teknik' | 'Nutrisi' | 'Masalah';\n  content: string;\n  icon: string;\n}\n\nexport enum AppTab {\n  DASHBOARD = 'dashboard',\n  EDUCATION = 'education',\n  TRACKER = 'tracker',\n  HEALTH = 'health',\n  PROFILE = 'profile'\n}\n\nexport interface YouTubeVideo {\n  id: string;\n  title: string;\n  thumbnail: string;\n  url: string;\n}\n"
+            }
+          ]
+        },
+        {
+          "path": "services/api.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Service untuk menangani login dan registrasi ke endpoint PHP atau mode debug.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport { CONFIG } from '../config';\nimport { User } from '../types';\n\nexport const apiService = {\n  login: async (phone: string, password: string): Promise<{ success: boolean; user?: User; message?: string }> => {\n    if (CONFIG.DEBUG_MODE) {\n      if (phone === '123' && password === '123') {\n        return { success: true, user: { name: 'Mama Debug', phone: '123' } };\n      }\n      return { success: false, message: 'Nomor HP atau Password salah (Mode Debug)' };\n    }\n\n    try {\n      const response = await fetch(`${CONFIG.API_BASE_URL}/login.php`, {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({ phone, password }),\n      });\n      const data = await response.json();\n      return data;\n    } catch (error) {\n      return { success: false, message: 'Gagal terhubung ke server.' };\n    }\n  },\n\n  register: async (user: User): Promise<{ success: boolean; message?: string }> => {\n    if (CONFIG.DEBUG_MODE) {\n      return { success: true };\n    }\n\n    try {\n      const response = await fetch(`${CONFIG.API_BASE_URL}/register.php`, {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify(user),\n      });\n      const data = await response.json();\n      return data;\n    } catch (error) {\n      return { success: false, message: 'Gagal terhubung ke server.' };\n    }\n  }\n};\n"
+            }
+          ]
+        },
+        {
+          "path": "services/storage.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Update storage untuk menghandle sesi user.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport { NursingLog, BMIData, User } from '../types';\n\nconst LOGS_KEY = 'mamanutri_logs';\nconst BMI_KEY = 'mamanutri_bmi';\nconst USER_KEY = 'mamanutri_user';\n\nexport const storage = {\n  getLogs: (): NursingLog[] => {\n    const data = localStorage.getItem(LOGS_KEY);\n    return data ? JSON.parse(data) : [];\n  },\n  saveLog: (log: NursingLog) => {\n    const logs = storage.getLogs();\n    logs.unshift(log);\n    localStorage.setItem(LOGS_KEY, JSON.stringify(logs));\n  },\n  deleteLog: (id: string) => {\n    const logs = storage.getLogs();\n    const filtered = logs.filter(l => l.id !== id);\n    localStorage.setItem(LOGS_KEY, JSON.stringify(filtered));\n  },\n  getBMIData: (): BMIData[] => {\n    const data = localStorage.getItem(BMI_KEY);\n    return data ? JSON.parse(data) : [];\n  },\n  saveBMI: (bmi: BMIData) => {\n    const history = storage.getBMIData();\n    history.unshift(bmi);\n    localStorage.setItem(BMI_KEY, JSON.stringify(history));\n  },\n  getUser: (): User | null => {\n    const data = localStorage.getItem(USER_KEY);\n    return data ? JSON.parse(data) : null;\n  },\n  setUser: (user: User | null) => {\n    if (user) {\n      localStorage.setItem(USER_KEY, JSON.stringify(user));\n    } else {\n      localStorage.removeItem(USER_KEY);\n    }\n  }\n};\n"
+            }
+          ]
+        },
+        {
+          "path": "App.tsx",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Integrasi Login/Register, Dashboard dengan Video, dan Tab Profil.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\nimport React, { useState, useEffect } from 'react';\nimport { \n  Home, \n  BookOpen, \n  Activity, \n  Calculator, \n  User as UserIcon,\n  ChevronRight,\n  Clock,\n  Heart,\n  PlayCircle,\n  LogOut,\n  Phone,\n  Lock,\n  UserPlus\n} from 'lucide-react';\nimport { AppTab, EducationArticle, User, YouTubeVideo } from './types';\nimport { EDUCATION_ARTICLES, getIcon } from './constants';\nimport TrackerSection from './components/TrackerSection';\nimport BMISection from './components/BMISection';\nimport { storage } from './services/storage';\nimport { apiService } from './services/api';\nimport { CONFIG } from './config';\n\nconst RECOMMENDED_VIDEOS: YouTubeVideo[] = [\n  { id: '1', title: 'Cara Pelekatan Menyusui yang Benar', thumbnail: 'https://img.youtube.com/vi/7F_9VjE0S70/mqdefault.jpg', url: 'https://www.youtube.com/watch?v=7F_9VjE0S70' },\n  { id: '2', title: 'Tips ASI Melimpah untuk Ibu Baru', thumbnail: 'https://img.youtube.com/vi/W59hP9S_vWA/mqdefault.jpg', url: 'https://www.youtube.com/watch?v=W59hP9S_vWA' },\n  { id: '3', title: 'Posisi Menyusui Anti Pegal', thumbnail: 'https://img.youtube.com/vi/t8M-7_Vf6Ew/mqdefault.jpg', url: 'https://www.youtube.com/watch?v=t8M-7_Vf6Ew' }\n];\n\nconst App: React.FC = () => {\n  const [currentUser, setCurrentUser] = useState<User | null>(storage.getUser());\n  const [isRegistering, setIsRegistering] = useState(false);\n  const [activeTab, setActiveTab] = useState<AppTab>(AppTab.DASHBOARD);\n  const [selectedArticle, setSelectedArticle] = useState<EducationArticle | null>(null);\n  const [summary, setSummary] = useState({ count: 0, totalTime: 0 });\n\n  // Form states\n  const [formName, setFormName] = useState('');\n  const [formPhone, setFormPhone] = useState('');\n  const [formPassword, setFormPassword] = useState('');\n  const [authError, setAuthError] = useState('');\n  const [isLoading, setIsLoading] = useState(false);\n\n  useEffect(() => {\n    if (currentUser) {\n      const logs = storage.getLogs();\n      const today = new Date().toDateString();\n      const todaysLogs = logs.filter(l => new Date(l.timestamp).toDateString() === today);\n      setSummary({\n        count: todaysLogs.length,\n        totalTime: todaysLogs.reduce((acc, curr) => acc + curr.duration, 0)\n      });\n    }\n  }, [activeTab, currentUser]);\n\n  const handleLogin = async () => {\n    setIsLoading(true);\n    setAuthError('');\n    const result = await apiService.login(formPhone, formPassword);\n    if (result.success && result.user) {\n      storage.setUser(result.user);\n      setCurrentUser(result.user);\n    } else {\n      setAuthError(result.message || 'Login gagal.');\n    }\n    setIsLoading(false);\n  };\n\n  const handleRegister = async () => {\n    setIsLoading(true);\n    setAuthError('');\n    const newUser = { name: formName, phone: formPhone, password: formPassword };\n    const result = await apiService.register(newUser);\n    if (result.success) {\n      setIsRegistering(false);\n      setAuthError('Registrasi berhasil! Silakan login.');\n    } else {\n      setAuthError(result.message || 'Registrasi gagal.');\n    }\n    setIsLoading(false);\n  };\n\n  const handleLogout = () => {\n    storage.setUser(null);\n    setCurrentUser(null);\n    setActiveTab(AppTab.DASHBOARD);\n  };\n\n  if (!currentUser) {\n    return (\n      <div className=\"max-w-md mx-auto min-h-screen bg-pink-50 flex items-center justify-center p-6\">\n        <div className=\"w-full space-y-8 animate-fade-in\">\n          <div className=\"text-center\">\n            <div className=\"w-20 h-20 bg-pink-500 rounded-3xl flex items-center justify-center text-white mx-auto shadow-xl shadow-pink-200 mb-4\">\n              <Heart fill=\"currentColor\" size={40} />\n            </div>\n            <h1 className=\"text-3xl font-black text-gray-800\">MamaNutri</h1>\n            <p className=\"text-gray-500\">{isRegistering ? 'Daftar Akun Baru' : 'Selamat Datang Kembali'}</p>\n          </div>\n\n          <div className=\"glass-card p-8 rounded-[40px] shadow-sm border-white\">\n            {authError && <div className=\"mb-4 p-3 bg-red-50 text-red-500 text-xs rounded-xl font-bold\">{authError}</div>}\n            \n            <div className=\"space-y-4\">\n              {isRegistering && (\n                <div className=\"relative\">\n                  <UserIcon className=\"absolute left-4 top-1/2 -translate-y-1/2 text-pink-300\" size={18} />\n                  <input \n                    type=\"text\" \n                    placeholder=\"Nama Lengkap\" \n                    value={formName}\n                    onChange={(e) => setFormName(e.target.value)}\n                    className=\"w-full pl-12 pr-4 py-4 rounded-2xl border border-pink-100 outline-none focus:ring-2 focus:ring-pink-300 transition-all\"\n                  />\n                </div>\n              )}\n              <div className=\"relative\">\n                <Phone className=\"absolute left-4 top-1/2 -translate-y-1/2 text-pink-300\" size={18} />\n                <input \n                  type=\"tel\" \n                  placeholder=\"Nomor HP\" \n                  value={formPhone}\n                  onChange={(e) => setFormPhone(e.target.value)}\n                  className=\"w-full pl-12 pr-4 py-4 rounded-2xl border border-pink-100 outline-none focus:ring-2 focus:ring-pink-300 transition-all\"\n                />\n              </div>\n              <div className=\"relative\">\n                <Lock className=\"absolute left-4 top-1/2 -translate-y-1/2 text-pink-300\" size={18} />\n                <input \n                  type=\"password\" \n                  placeholder=\"Password\" \n                  value={formPassword}\n                  onChange={(e) => setFormPassword(e.target.value)}\n                  className=\"w-full pl-12 pr-4 py-4 rounded-2xl border border-pink-100 outline-none focus:ring-2 focus:ring-pink-300 transition-all\"\n                />\n              </div>\n              <button \n                onClick={isRegistering ? handleRegister : handleLogin}\n                disabled={isLoading}\n                className=\"w-full bg-pink-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-pink-200 active:scale-95 transition-all disabled:opacity-50\"\n              >\n                {isLoading ? 'Memproses...' : (isRegistering ? 'Daftar Sekarang' : 'Masuk Aplikasi')}\n              </button>\n            </div>\n          </div>\n\n          <div className=\"text-center\">\n            <button \n              onClick={() => { setIsRegistering(!isRegistering); setAuthError(''); }}\n              className=\"text-pink-600 font-bold text-sm\"\n            >\n              {isRegistering ? 'Sudah punya akun? Login' : 'Belum punya akun? Daftar'}\n            </button>\n          </div>\n          {CONFIG.DEBUG_MODE && <p className=\"text-center text-[10px] text-gray-400\">DEBUG MODE: Gunakan HP 123 Pass 123</p>}\n        </div>\n      </div>\n    );\n  }\n\n  const renderDashboard = () => (\n    <div className=\"space-y-6 animate-fade-in\">\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <h1 className=\"text-2xl font-black text-gray-800\">Halo, {currentUser.name}! 🌸</h1>\n          <p className=\"text-gray-500 text-sm\">Semangat mengASIhi hari ini.</p>\n        </div>\n        <div className=\"w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-500\">\n          <Heart fill=\"currentColor\" size={24} />\n        </div>\n      </div>\n\n      <div className=\"grid grid-cols-2 gap-4\">\n        <div className=\"bg-gradient-to-br from-pink-400 to-rose-400 p-5 rounded-3xl text-white shadow-lg shadow-pink-100\">\n          <div className=\"flex justify-between items-start mb-4\">\n            <Activity size={24} />\n            <span className=\"text-[10px] bg-white/20 px-2 py-0.5 rounded-full\">HARI INI</span>\n          </div>\n          <p className=\"text-3xl font-bold\">{summary.count}</p>\n          <p className=\"text-xs opacity-80\">Sesi Menyusui</p>\n        </div>\n        <div className=\"bg-gradient-to-br from-indigo-400 to-blue-400 p-5 rounded-3xl text-white shadow-lg shadow-blue-100\">\n          <div className=\"flex justify-between items-start mb-4\">\n            <Clock size={24} />\n            <span className=\"text-[10px] bg-white/20 px-2 py-0.5 rounded-full\">DURASI</span>\n          </div>\n          <p className=\"text-3xl font-bold\">{summary.totalTime}</p>\n          <p className=\"text-xs opacity-80\">Total Menit</p>\n        </div>\n      </div>\n\n      <div className=\"space-y-4\">\n        <div className=\"flex items-center justify-between\">\n          <h3 className=\"font-bold text-gray-800\">Videos Rekomendasi</h3>\n        </div>\n        <div className=\"flex gap-4 overflow-x-auto pb-4 custom-scrollbar\">\n          {RECOMMENDED_VIDEOS.map((video) => (\n            <div \n              key={video.id} \n              onClick={() => window.open(video.url, '_blank')}\n              className=\"flex-shrink-0 w-64 glass-card rounded-3xl overflow-hidden border-white cursor-pointer group\"\n            >\n              <div className=\"relative\">\n                <img src={video.thumbnail} alt={video.title} className=\"w-full h-32 object-cover\" />\n                <div className=\"absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity\">\n                  <PlayCircle className=\"text-white\" size={40} />\n                </div>\n              </div>\n              <div className=\"p-4\">\n                <h4 className=\"font-bold text-gray-800 text-sm leading-tight line-clamp-2\">{video.title}</h4>\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n\n      <div className=\"bg-pink-50 p-6 rounded-3xl border border-pink-100 relative overflow-hidden group\">\n        <div className=\"relative z-10\">\n          <h3 className=\"text-pink-800 font-bold mb-1\">Butuh Bantuan Ahli?</h3>\n          <p className=\"text-pink-600 text-sm mb-4\">Konsultasi langsung dengan konselor laktasi kami.</p>\n          <button \n            onClick={() => window.open(CONFIG.CONSULTATION_EXTERNAL_URL, '_blank')}\n            className=\"bg-pink-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md active:scale-95 transition-transform\"\n          >\n            Konsultasi Sekarang\n          </button>\n        </div>\n        <div className=\"absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform\">\n          <Phone size={120} />\n        </div>\n      </div>\n    </div>\n  );\n\n  const renderProfile = () => (\n    <div className=\"space-y-6 animate-fade-in\">\n      <h2 className=\"text-2xl font-black text-gray-800\">Profil Mama</h2>\n      \n      <div className=\"glass-card p-8 rounded-[40px] text-center border-white\">\n        <div className=\"w-24 h-24 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-lg\">\n          <UserIcon size={48} />\n        </div>\n        <h3 className=\"text-xl font-bold text-gray-800\">{currentUser.name}</h3>\n        <p className=\"text-gray-500 text-sm\">{currentUser.phone}</p>\n      </div>\n\n      <div className=\"space-y-3\">\n        <button className=\"w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-gray-100\">\n          <div className=\"flex items-center gap-3\">\n            <div className=\"p-2 bg-blue-50 text-blue-500 rounded-xl\"><Heart size={20} /></div>\n            <span className=\"font-bold text-gray-700\">Pengaturan Akun</span>\n          </div>\n          <ChevronRight size={18} className=\"text-gray-300\" />\n        </button>\n        <button className=\"w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-gray-100\">\n          <div className=\"flex items-center gap-3\">\n            <div className=\"p-2 bg-green-50 text-green-500 rounded-xl\"><BookOpen size={20} /></div>\n            <span className=\"font-bold text-gray-700\">Tentang Aplikasi</span>\n          </div>\n          <ChevronRight size={18} className=\"text-gray-300\" />\n        </button>\n        <button \n          onClick={handleLogout}\n          className=\"w-full flex items-center gap-3 p-5 bg-red-50 text-red-600 rounded-3xl border border-red-100 font-bold\"\n        >\n          <LogOut size={20} />\n          Keluar\n        </button>\n      </div>\n    </div>\n  );\n\n  return (\n    <div className=\"max-w-md mx-auto min-h-screen pb-24 px-5 pt-6 relative overflow-x-hidden\">\n      {activeTab === AppTab.DASHBOARD && renderDashboard()}\n      {activeTab === AppTab.EDUCATION && (\n        !selectedArticle ? (\n          <div className=\"space-y-4 animate-fade-in\">\n            <h2 className=\"text-2xl font-black text-gray-800 mb-6\">Pusat Edukasi ASI</h2>\n            <div className=\"grid gap-4\">\n              {EDUCATION_ARTICLES.map((article) => (\n                <button \n                  key={article.id}\n                  onClick={() => setSelectedArticle(article)}\n                  className=\"w-full flex items-center gap-4 bg-white p-5 rounded-3xl border border-gray-100 text-left hover:shadow-sm\"\n                >\n                  <div className=\"p-4 bg-pink-50 text-pink-500 rounded-2xl\">\n                    {getIcon(article.icon)}\n                  </div>\n                  <div>\n                    <span className=\"text-[10px] font-bold text-pink-400 uppercase tracking-widest\">{article.category}</span>\n                    <h4 className=\"font-bold text-gray-800 text-lg\">{article.title}</h4>\n                  </div>\n                </button>\n              ))}\n            </div>\n          </div>\n        ) : (\n          <div className=\"animate-slide-right pb-24\">\n            <button onClick={() => setSelectedArticle(null)} className=\"text-pink-500 font-bold mb-6 flex items-center gap-1\">← Kembali</button>\n            <div className=\"glass-card p-8 rounded-[40px] shadow-sm\">\n              <h2 className=\"text-3xl font-black text-gray-800 mb-4\">{selectedArticle.title}</h2>\n              <p className=\"text-gray-600 leading-relaxed text-lg\">{selectedArticle.content}</p>\n            </div>\n          </div>\n        )\n      )}\n      {activeTab === AppTab.TRACKER && <TrackerSection />}\n      {activeTab === AppTab.HEALTH && <BMISection />}\n      {activeTab === AppTab.PROFILE && renderProfile()}\n\n      <nav className=\"fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass-card border-white/50 shadow-2xl rounded-[32px] px-2 py-3 flex items-center justify-around z-50\">\n        {[\n          { tab: AppTab.DASHBOARD, icon: Home, label: 'Beranda' },\n          { tab: AppTab.EDUCATION, icon: BookOpen, label: 'Materi' },\n          { tab: AppTab.TRACKER, icon: Activity, label: 'Tracker' },\n          { tab: AppTab.HEALTH, icon: Calculator, label: 'IMT' },\n          { tab: AppTab.PROFILE, icon: UserIcon, label: 'Profil' }\n        ].map(({ tab, icon: Icon, label }) => (\n          <button \n            key={tab}\n            onClick={() => { setActiveTab(tab); setSelectedArticle(null); }}\n            className={`flex flex-col items-center gap-1 p-2 rounded-2xl transition-all ${activeTab === tab ? 'text-pink-500' : 'text-gray-400'}`}\n          >\n            <Icon size={22} strokeWidth={activeTab === tab ? 3 : 2} />\n            <span className=\"text-[10px] font-bold\">{label}</span>\n          </button>\n        ))}\n      </nav>\n\n      <style>{`\n        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }\n        @keyframes slideRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }\n        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }\n        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }\n        .animate-slide-right { animation: slideRight 0.4s ease-out forwards; }\n        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }\n        .custom-scrollbar::-webkit-scrollbar { display: none; }\n      `}</style>\n    </div>\n  );\n};\n\nexport default App;\n"
+            }
+          ]
+        },
+        {
+          "path": "services/geminiService.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Menghapus gemini service karena diganti dengan konsultasi website luar.",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "\n// Service dihentikan sementara - Konsultasi beralih ke website eksternal\nexport const askMamaBot = async (prompt: string): Promise<string> => {\n  return \"Fitur konsultasi beralih ke layanan ahli di website eksternal.\";\n};\n"
+            }
+          ]
+        }
+      ]
+    },
+    "createdTimestamp": {
+      "seconds": 1770723162,
+      "nanos": 706000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770723163,
+      "nanos": 607000000
+    }
+  }
+]
