@@ -1,5 +1,5 @@
 {
-  "name": "MamaNutri - Edukasi & Tracker ASI Eksklusif",
-  "description": "Aplikasi pendamping ibu menyusui yang menyediakan materi edukasi ASI Eksklusif, kalkulator IMT, pelacakan durasi menyusui, dan asisten AI untuk konsultasi laktasi.",
+  "name": "Teman ASI - Pendamping Ibu Menyusui",
+  "description": "Aplikasi pendamping ibu menyusui dengan materi edukasi, histori bacaan, pelacakan sesi menyusui, pemantauan tumbuh kembang, dan kalkulator IMT.",
   "requestFramePermissions": []
 }

@@ -1,19 +1,27 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Teman ASI
 
-# Run and deploy your AI Studio app
+Teman ASI adalah aplikasi pendamping ibu menyusui berbasis React dan TypeScript. Aplikasi ini menyediakan materi edukasi, histori bacaan, pencatatan sesi menyusui, profil dan perkembangan anak, kalkulator IMT, serta akses konsultasi.
 
-This contains everything you need to run your app locally.
+## Menjalankan aplikasi
 
-View your app in AI Studio: https://ai.studio/apps/be2551d0-13c4-4cc9-9688-4c3200e33f87
+Persyaratan: Node.js versi LTS dan npm.
 
-## Run Locally
+```bash
+npm install
+npm run dev
+```
 
-**Prerequisites:** Node.js
+Aplikasi development berjalan di `http://localhost:3000`.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Pemeriksaan kualitas
+
+```bash
+npm run check
+npm run build
+```
+
+## Catatan
+
+- Data aplikasi disimpan secara lokal pada browser.
+- Materi bersifat edukasi dan bukan pengganti pemeriksaan tenaga kesehatan.
+- Nilai layanan eksternal dan mode debug dapat diatur melalui `config.ts`.

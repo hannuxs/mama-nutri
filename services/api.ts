@@ -21,7 +21,7 @@ export const apiService = {
       });
       const data = await response.json();
       return data;
-    } catch (error) {
+    } catch {
       return { success: false, message: 'Gagal terhubung ke server.' };
     }
   },
@@ -39,7 +39,7 @@ export const apiService = {
       });
       const data = await response.json();
       return data;
-    } catch (error) {
+    } catch {
       return { success: false, message: 'Gagal terhubung ke server.' };
     }
   },

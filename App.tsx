@@ -13,14 +13,13 @@ import {
   History,
   Home,
   MessageCircle,
-  PlayCircle,
   PlusCircle,
   Ruler,
   Scale,
   Trash2,
   TrendingUp,
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   CartesianGrid,
   Legend,
@@ -32,35 +31,46 @@ import {
   YAxis,
 } from 'recharts';
 import BMISection from './components/BMISection';
+import ArticleContent from './components/ArticleContent';
+import RecentReads from './components/RecentReads';
 import TrackerSection from './components/TrackerSection';
 import { CONFIG } from './config';
 import { EDUCATION_DATA, EducationCategory, getIcon, SubTopic } from './constants';
 import { storage } from './services/storage';
-import { AppTab, ChildProfile, GrowthEntry, YouTubeVideo } from './types';
+import { AppTab, ChildProfile, GrowthEntry, ReadingHistoryEntry } from './types';
 
-const RECOMMENDED_VIDEOS: YouTubeVideo[] = [
-  {
-    id: '1',
-    title: 'Cara Pelekatan Menyusui yang Benar',
-    thumbnail: 'https://img.youtube.com/vi/7F_9VjE0S70/mqdefault.jpg',
-    url: 'https://www.youtube.com/watch?v=7F_9VjE0S70',
-  },
-  {
-    id: '2',
-    title: 'Tips ASI Melimpah untuk Ibu Baru',
-    thumbnail: 'https://img.youtube.com/vi/W59hP9S_vWA/mqdefault.jpg',
-    url: 'https://www.youtube.com/watch?v=W59hP9S_vWA',
-  },
-  {
-    id: '3',
-    title: 'Posisi Menyusui Anti Pegal',
-    thumbnail: 'https://img.youtube.com/vi/t8M-9_Vf6Ew/mqdefault.jpg',
-    url: 'https://www.youtube.com/watch?v=t8M-7_Vf6Ew',
-  },
-];
+type GrowthTab = 'Weight' | 'Height' | 'Head';
+type WeightIndicator = 'BB_Umur' | 'BB_TB' | 'IMT_Umur';
 
-// Simplified WHO Growth Standards (Simplified for mock data purposes)
-const WHO_STANDARDS = {
+interface GrowthReferencePoint {
+  age?: number;
+  height?: number;
+  min: number;
+  med: number;
+  max: number;
+}
+
+interface GrowthReferenceCollection {
+  weight: GrowthReferencePoint[];
+  height: GrowthReferencePoint[];
+  head: GrowthReferencePoint[];
+  bmi: GrowthReferencePoint[];
+  weightForHeight: GrowthReferencePoint[];
+}
+
+interface GrowthUserPoint {
+  age: number;
+  height: number;
+  weight: number;
+  bmi: number;
+  user: number;
+}
+
+const getPointCoordinate = (point: GrowthReferencePoint | GrowthUserPoint, key: 'age' | 'height') =>
+  point[key] ?? 0;
+
+// Rentang ringkas untuk visualisasi edukasi; bukan alat diagnosis atau tabel klinis lengkap.
+const GROWTH_REFERENCE_RANGES: Record<ChildProfile['gender'], GrowthReferenceCollection> = {
   Boy: {
     weight: [
       { age: 0, min: 2.5, med: 3.3, max: 4.3 },
@@ -156,9 +166,9 @@ const WHO_STANDARDS = {
 };
 
 const getGrowthLimits = (
-  tab: 'Weight' | 'Height' | 'Head',
-  indicator: 'BB_Umur' | 'BB_TB' | 'IMT_Umur',
-  stdPoint: any,
+  tab: GrowthTab,
+  indicator: WeightIndicator,
+  stdPoint: GrowthReferencePoint,
 ) => {
   if (!stdPoint) return { min: 0, max: 0 };
   const minVal = stdPoint.min; // -2 SD
@@ -181,7 +191,6 @@ const getGrowthLimits = (
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AppTab>(AppTab.DASHBOARD);
-  const [summary, setSummary] = useState({ count: 0, totalTime: 0 });
 
   // Child Profile states
   const [children, setChildren] = useState<ChildProfile[]>(storage.getChildren());
@@ -194,9 +203,9 @@ const App: React.FC = () => {
   const [isAddingGrowth, setIsAddingGrowth] = useState(false);
   const [editingGrowthEntryId, setEditingGrowthEntryId] = useState<string | null>(null);
   const [isHistoryView, setIsHistoryView] = useState(false);
-  const [growthTab, setGrowthTab] = useState<'Weight' | 'Height' | 'Head'>('Weight');
+  const [growthTab, setGrowthTab] = useState<GrowthTab>('Weight');
   const [ageRange, setAgeRange] = useState<'0-2' | '2-5'>('0-2');
-  const [weightIndicator, setWeightIndicator] = useState<'BB_Umur' | 'BB_TB' | 'IMT_Umur'>('BB_TB');
+  const [weightIndicator, setWeightIndicator] = useState<WeightIndicator>('BB_TB');
 
   // Form states for child profile
   const [childName, setChildName] = useState('');
@@ -216,16 +225,32 @@ const App: React.FC = () => {
   // Education navigation states
   const [selectedCategory, setSelectedCategory] = useState<EducationCategory | null>(null);
   const [selectedSubTopic, setSelectedSubTopic] = useState<SubTopic | null>(null);
+  const [readingHistory, setReadingHistory] = useState<ReadingHistoryEntry[]>(
+    storage.getReadingHistory,
+  );
 
-  useEffect(() => {
+  const summary = (() => {
     const logs = storage.getLogs();
     const today = new Date().toDateString();
     const todaysLogs = logs.filter((l) => new Date(l.timestamp).toDateString() === today);
-    setSummary({
+    return {
       count: todaysLogs.length,
       totalTime: todaysLogs.reduce((acc, curr) => acc + curr.duration, 0),
+    };
+  })();
+
+  const handleOpenTopic = (category: EducationCategory, topic: SubTopic) => {
+    const updatedHistory = storage.saveReadingHistory({
+      categoryId: category.id,
+      subTopicId: topic.id,
+      readAt: new Date().toISOString(),
     });
-  }, [activeTab]);
+    setReadingHistory(updatedHistory);
+    setSelectedCategory(category);
+    setSelectedSubTopic(topic);
+    setActiveTab(AppTab.EDUCATION);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const calculateAge = (birthDate: string) => {
     const today = new Date();
@@ -253,7 +278,7 @@ const App: React.FC = () => {
     if (!childName || !childBirthDate) return;
 
     const newChild: ChildProfile = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name: childName,
       birthDate: childBirthDate,
       gender: childGender,
@@ -297,8 +322,7 @@ const App: React.FC = () => {
 
   const handleDeleteChild = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    // Use a simpler approach if window.confirm is unreliable in preview
-    const confirmDelete = true; // For now direct delete to fix "not working"
+    const confirmDelete = window.confirm('Hapus profil anak beserta seluruh riwayatnya?');
     if (confirmDelete) {
       storage.deleteChild(id);
       setChildren(children.filter((c) => c.id !== id));
@@ -312,7 +336,7 @@ const App: React.FC = () => {
     if (!selectedChild || !growthDate) return;
 
     const entry: GrowthEntry = {
-      id: editingGrowthEntryId || Date.now().toString(),
+      id: editingGrowthEntryId || crypto.randomUUID(),
       date: growthDate,
       weight: parseFloat(growthWeight) || 0,
       height: parseFloat(growthHeight) || 0,
@@ -358,7 +382,7 @@ const App: React.FC = () => {
 
   const handleDeleteGrowthEntry = (id: string) => {
     if (!selectedChild) return;
-    const confirmDelete = true;
+    const confirmDelete = window.confirm('Hapus data perkembangan ini?');
     if (confirmDelete) {
       const updatedHistory = selectedChild.growthHistory.filter((h) => h.id !== id);
       const updatedChild = { ...selectedChild, growthHistory: updatedHistory };
@@ -382,6 +406,9 @@ const App: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
+          <p className="mb-1 text-[10px] font-black uppercase tracking-[0.22em] text-pink-500">
+            Teman ASI
+          </p>
           <h1 className="text-2xl font-black text-gray-800">Halo, Mama! 🌸</h1>
           <p className="text-gray-500 text-sm">Semangat mengASIhi hari ini.</p>
         </div>
@@ -470,37 +497,16 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-bold text-gray-800">Video Rekomendasi</h3>
-        </div>
-        <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
-          {RECOMMENDED_VIDEOS.map((video) => (
-            <div
-              key={video.id}
-              onClick={() => window.open(video.url, '_blank')}
-              className="flex-shrink-0 w-64 glass-card rounded-3xl overflow-hidden border-white cursor-pointer group"
-            >
-              <div className="relative">
-                <img src={video.thumbnail} alt={video.title} className="w-full h-32 object-cover" />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <PlayCircle className="text-white" size={40} />
-                </div>
-              </div>
-              <div className="p-4">
-                <h4 className="font-bold text-gray-800 text-sm leading-tight line-clamp-2">
-                  {video.title}
-                </h4>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <RecentReads
+        history={readingHistory}
+        onOpen={handleOpenTopic}
+        onBrowse={() => setActiveTab(AppTab.EDUCATION)}
+      />
     </div>
   );
 
   const renderEducation = () => {
-    if (selectedSubTopic) {
+    if (selectedSubTopic && selectedCategory) {
       return (
         <div className="space-y-6 animate-fade-in pb-24">
           <button
@@ -509,14 +515,7 @@ const App: React.FC = () => {
           >
             <ArrowLeft size={20} /> Kembali
           </button>
-          <div className="glass-card p-8 rounded-[40px] border-white shadow-sm">
-            <h2 className="text-2xl font-black text-gray-800 mb-4">{selectedSubTopic.title}</h2>
-            <div className="prose prose-pink">
-              <p className="text-gray-600 leading-relaxed text-lg whitespace-pre-line">
-                {selectedSubTopic.content}
-              </p>
-            </div>
-          </div>
+          <ArticleContent category={selectedCategory} topic={selectedSubTopic} />
         </div>
       );
     }
@@ -532,16 +531,25 @@ const App: React.FC = () => {
           </button>
           <div className="space-y-4">
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-4 bg-pink-100 text-pink-500 rounded-3xl">
-                {getIcon(selectedCategory.icon)}
+              <div className="overflow-hidden rounded-3xl bg-pink-100">
+                <img
+                  src={selectedCategory.image}
+                  alt={selectedCategory.imageAlt}
+                  className="h-20 w-24 object-cover"
+                />
               </div>
-              <h2 className="text-2xl font-black text-gray-800">{selectedCategory.title}</h2>
+              <div>
+                <h2 className="text-2xl font-black text-gray-800">{selectedCategory.title}</h2>
+                <p className="mt-1 text-sm leading-5 text-gray-500">
+                  {selectedCategory.description}
+                </p>
+              </div>
             </div>
             <div className="grid gap-3">
               {selectedCategory.subTopics.map((sub) => (
                 <button
                   key={sub.id}
-                  onClick={() => setSelectedSubTopic(sub)}
+                  onClick={() => handleOpenTopic(selectedCategory, sub)}
                   className="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-gray-100 text-left hover:shadow-md transition-shadow"
                 >
                   <span className="font-bold text-gray-700">{sub.title}</span>
@@ -562,16 +570,22 @@ const App: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat)}
-              className="w-full flex items-center gap-5 p-6 bg-white rounded-[32px] border border-gray-100 text-left hover:shadow-md transition-shadow group"
+              className="w-full overflow-hidden rounded-[32px] border border-gray-100 bg-white text-left transition-shadow hover:shadow-md group"
             >
-              <div className="p-4 bg-pink-50 text-pink-500 rounded-2xl group-hover:bg-pink-500 group-hover:text-white transition-colors">
-                {getIcon(cat.icon)}
+              <img src={cat.image} alt={cat.imageAlt} className="h-36 w-full object-cover" />
+              <div className="flex items-center gap-4 p-5">
+                <div className="rounded-2xl bg-pink-50 p-3 text-pink-500 transition-colors group-hover:bg-pink-500 group-hover:text-white">
+                  {getIcon(cat.icon)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-lg font-black text-gray-800">{cat.title}</h3>
+                  <p className="mt-1 text-xs leading-5 text-gray-400">{cat.description}</p>
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-pink-400">
+                    {cat.subTopics.length} Submateri
+                  </p>
+                </div>
+                <ChevronRight size={20} className="shrink-0 text-gray-300" />
               </div>
-              <div className="flex-1">
-                <h3 className="font-black text-gray-800 text-lg">{cat.title}</h3>
-                <p className="text-xs text-gray-400">{cat.subTopics.length} Sub-materi</p>
-              </div>
-              <ChevronRight size={20} className="text-gray-300" />
             </button>
           ))}
         </div>
@@ -763,14 +777,16 @@ const App: React.FC = () => {
 
               {/* Tab Selector */}
               <div className="flex bg-gray-100 p-1.5 rounded-3xl mb-4">
-                {[
-                  { id: 'Weight', icon: Scale, label: 'Berat' },
-                  { id: 'Height', icon: Ruler, label: 'Tinggi' },
-                  { id: 'Head', icon: Brain, label: 'LK' },
-                ].map((t) => (
+                {(
+                  [
+                    { id: 'Weight', icon: Scale, label: 'Berat' },
+                    { id: 'Height', icon: Ruler, label: 'Tinggi' },
+                    { id: 'Head', icon: Brain, label: 'LK' },
+                  ] as const
+                ).map((t) => (
                   <button
                     key={t.id}
-                    onClick={() => setGrowthTab(t.id as any)}
+                    onClick={() => setGrowthTab(t.id)}
                     className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold transition-all ${growthTab === t.id ? 'bg-white text-pink-500 shadow-md' : 'text-gray-400'}`}
                   >
                     <t.icon size={18} />
@@ -786,13 +802,13 @@ const App: React.FC = () => {
                     onClick={() => setAgeRange('0-2')}
                     className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter border transition-all ${ageRange === '0-2' ? 'bg-pink-50 text-pink-600 border-pink-100' : 'bg-gray-50 text-gray-400 border-gray-100'}`}
                   >
-                    0-2 Tahun (WHO)
+                    0-2 Tahun
                   </button>
                   <button
                     onClick={() => setAgeRange('2-5')}
                     className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter border transition-all ${ageRange === '2-5' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 'bg-gray-50 text-gray-400 border-gray-100'}`}
                   >
-                    2-5 Tahun (WHO)
+                    2-5 Tahun
                   </button>
                 </div>
               )}
@@ -862,7 +878,7 @@ const App: React.FC = () => {
                         const birthHeight = parseFloat(selectedChild.birthHeight) || 50;
                         const birthBmi = birthWeight / Math.pow(birthHeight / 100, 2);
 
-                        const birthEntry = {
+                        const birthEntry: GrowthUserPoint = {
                           age: 0,
                           height: birthHeight,
                           weight: birthWeight,
@@ -877,7 +893,7 @@ const App: React.FC = () => {
                         };
 
                         const history = selectedChild.growthHistory || [];
-                        const userHistory = history.map((entry) => {
+                        const userHistory: GrowthUserPoint[] = history.map((entry) => {
                           const birth = new Date(selectedChild.birthDate);
                           const entryDate = new Date(entry.date);
                           const monthAge =
@@ -901,44 +917,44 @@ const App: React.FC = () => {
                           };
                         });
 
-                        const combinedUser = [birthEntry, ...userHistory];
+                        const combinedUser: GrowthUserPoint[] = [birthEntry, ...userHistory];
 
-                        let standardsFull;
+                        let standardsFull: GrowthReferencePoint[];
                         if (growthTab === 'Weight') {
                           if (weightIndicator === 'BB_TB') {
-                            standardsFull = WHO_STANDARDS[gender].weightForHeight;
+                            standardsFull = GROWTH_REFERENCE_RANGES[gender].weightForHeight;
                           } else if (weightIndicator === 'IMT_Umur') {
-                            standardsFull = WHO_STANDARDS[gender].bmi;
+                            standardsFull = GROWTH_REFERENCE_RANGES[gender].bmi;
                           } else {
-                            standardsFull = WHO_STANDARDS[gender].weight;
+                            standardsFull = GROWTH_REFERENCE_RANGES[gender].weight;
                           }
                         } else if (growthTab === 'Height') {
-                          standardsFull = WHO_STANDARDS[gender].height;
+                          standardsFull = GROWTH_REFERENCE_RANGES[gender].height;
                         } else {
-                          standardsFull = WHO_STANDARDS[gender].head;
+                          standardsFull = GROWTH_REFERENCE_RANGES[gender].head;
                         }
 
                         const xKey = isWeightForHeight ? 'height' : 'age';
 
                         // Filter standards based on ageRange
-                        let standards = standardsFull || [];
+                        let standards = standardsFull;
                         if (growthTab !== 'Head') {
                           if (isWeightForHeight) {
                             if (ageRange === '0-2') {
-                              standards = (standardsFull || []).filter((s: any) => s.height <= 95);
+                              standards = standardsFull.filter((s) => (s.height ?? 0) <= 95);
                             } else {
-                              standards = (standardsFull || []).filter((s: any) => s.height >= 80);
+                              standards = standardsFull.filter((s) => (s.height ?? 0) >= 80);
                             }
                           } else {
                             if (ageRange === '0-2') {
-                              standards = (standardsFull || []).filter((s: any) => s.age <= 24);
+                              standards = standardsFull.filter((s) => (s.age ?? 0) <= 24);
                             } else {
-                              standards = (standardsFull || []).filter((s: any) => s.age >= 24);
+                              standards = standardsFull.filter((s) => (s.age ?? 0) >= 24);
                             }
                           }
                         }
 
-                        const filteredUser = combinedUser.filter((u: any) => {
+                        const filteredUser = combinedUser.filter((u) => {
                           if (isWeightForHeight) {
                             if (ageRange === '0-2') return u.height <= 95;
                             return u.height >= 80 && u.height <= 125;
@@ -951,12 +967,12 @@ const App: React.FC = () => {
 
                         // Create a unified list of unique coordinates
                         const xValuesSet = new Set<number>();
-                        standards.forEach((s: any) => {
-                          const v = s[xKey];
+                        standards.forEach((s) => {
+                          const v = getPointCoordinate(s, xKey);
                           if (typeof v === 'number') xValuesSet.add(v);
                         });
-                        filteredUser.forEach((u: any) => {
-                          const v = u[xKey];
+                        filteredUser.forEach((u) => {
+                          const v = getPointCoordinate(u, xKey);
                           if (typeof v === 'number') xValuesSet.add(v);
                         });
 
@@ -965,17 +981,17 @@ const App: React.FC = () => {
                         const getInterpolated = (xVal: number) => {
                           if (standards.length === 0) return { min: 0, med: 0, max: 0 };
                           const sortedStds = [...standards].sort(
-                            (a: any, b: any) => a[xKey] - b[xKey],
+                            (a, b) => getPointCoordinate(a, xKey) - getPointCoordinate(b, xKey),
                           );
 
                           const first = sortedStds[0];
-                          const firstX = first[xKey];
+                          const firstX = getPointCoordinate(first, xKey);
                           if (xVal <= firstX) {
                             return { min: first.min, med: first.med, max: first.max };
                           }
 
                           const last = sortedStds[sortedStds.length - 1];
-                          const lastX = last[xKey];
+                          const lastX = getPointCoordinate(last, xKey);
                           if (xVal >= lastX) {
                             return { min: last.min, med: last.med, max: last.max };
                           }
@@ -983,8 +999,8 @@ const App: React.FC = () => {
                           for (let i = 0; i < sortedStds.length - 1; i++) {
                             const p1 = sortedStds[i];
                             const p2 = sortedStds[i + 1];
-                            const x1 = p1[xKey];
-                            const x2 = p2[xKey];
+                            const x1 = getPointCoordinate(p1, xKey);
+                            const x2 = getPointCoordinate(p2, xKey);
                             if (xVal >= x1 && xVal <= x2) {
                               if (x1 === x2) return { min: p1.min, med: p1.med, max: p1.max };
                               const ratio = (xVal - x1) / (x2 - x1);
@@ -999,7 +1015,9 @@ const App: React.FC = () => {
                         };
 
                         const findUserValue = (xVal: number) => {
-                          const matches = filteredUser.filter((u: any) => u[xKey] === xVal);
+                          const matches = filteredUser.filter(
+                            (u) => getPointCoordinate(u, xKey) === xVal,
+                          );
                           if (matches.length > 0) {
                             return matches[matches.length - 1].user;
                           }
@@ -1088,7 +1106,7 @@ const App: React.FC = () => {
                         dataKey="standard"
                         stroke="#64748B"
                         strokeWidth={2.5}
-                        name="Standar WHO (Median)"
+                        name="Median Referensi"
                         dot={false}
                         connectNulls={true}
                         zIndex={5}
@@ -1157,36 +1175,39 @@ const App: React.FC = () => {
                     (lastDate.getFullYear() - birth.getFullYear()) * 12 +
                     (lastDate.getMonth() - birth.getMonth());
 
-                  let standardsFull;
+                  let standardsFull: GrowthReferencePoint[];
                   if (growthTab === 'Weight') {
                     if (weightIndicator === 'BB_TB') {
-                      standardsFull = WHO_STANDARDS[selectedChild.gender].weightForHeight;
+                      standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].weightForHeight;
                     } else if (weightIndicator === 'IMT_Umur') {
-                      standardsFull = WHO_STANDARDS[selectedChild.gender].bmi;
+                      standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].bmi;
                     } else {
-                      standardsFull = WHO_STANDARDS[selectedChild.gender].weight;
+                      standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].weight;
                     }
                   } else if (growthTab === 'Height') {
-                    standardsFull = WHO_STANDARDS[selectedChild.gender].height;
+                    standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].height;
                   } else {
-                    standardsFull = WHO_STANDARDS[selectedChild.gender].head;
+                    standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].head;
                   }
 
                   // Find closest standard point
-                  let std;
-                  let val;
+                  let std: GrowthReferencePoint;
+                  let val: number;
 
                   if (growthTab === 'Weight' && weightIndicator === 'BB_TB') {
                     const currentHeight = head.height || selectedChild.birthHeight;
-                    std = standardsFull.reduce((prev: any, curr: any) =>
-                      Math.abs(curr.height - currentHeight) < Math.abs(prev.height - currentHeight)
+                    std = standardsFull.reduce((prev, curr) =>
+                      Math.abs((curr.height ?? 0) - currentHeight) <
+                      Math.abs((prev.height ?? 0) - currentHeight)
                         ? curr
                         : prev,
                     );
                     val = head.weight || selectedChild.birthWeight;
                   } else {
-                    std = standardsFull.reduce((prev: any, curr: any) =>
-                      Math.abs(curr.age - lastAge) < Math.abs(prev.age - lastAge) ? curr : prev,
+                    std = standardsFull.reduce((prev, curr) =>
+                      Math.abs((curr.age ?? 0) - lastAge) < Math.abs((prev.age ?? 0) - lastAge)
+                        ? curr
+                        : prev,
                     );
                     if (growthTab === 'Weight') {
                       if (weightIndicator === 'IMT_Umur') {
@@ -1232,38 +1253,41 @@ const App: React.FC = () => {
                         (lastDate.getFullYear() - birth.getFullYear()) * 12 +
                         (lastDate.getMonth() - birth.getMonth());
 
-                      let standardsFull;
+                      let standardsFull: GrowthReferencePoint[];
                       if (growthTab === 'Weight') {
                         if (weightIndicator === 'BB_TB') {
-                          standardsFull = WHO_STANDARDS[selectedChild.gender].weightForHeight;
+                          standardsFull =
+                            GROWTH_REFERENCE_RANGES[selectedChild.gender].weightForHeight;
                         } else if (weightIndicator === 'IMT_Umur') {
-                          standardsFull = WHO_STANDARDS[selectedChild.gender].bmi;
+                          standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].bmi;
                         } else {
-                          standardsFull = WHO_STANDARDS[selectedChild.gender].weight;
+                          standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].weight;
                         }
                       } else if (growthTab === 'Height') {
-                        standardsFull = WHO_STANDARDS[selectedChild.gender].height;
+                        standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].height;
                       } else {
-                        standardsFull = WHO_STANDARDS[selectedChild.gender].head;
+                        standardsFull = GROWTH_REFERENCE_RANGES[selectedChild.gender].head;
                       }
 
-                      let std;
-                      let val;
-                      let label = '';
+                      let std: GrowthReferencePoint;
+                      let val: number;
+                      let label: string;
 
                       if (growthTab === 'Weight' && weightIndicator === 'BB_TB') {
                         const currentHeight = head.height || selectedChild.birthHeight;
-                        std = standardsFull.reduce((prev: any, curr: any) =>
-                          Math.abs(curr.height - currentHeight) <
-                          Math.abs(prev.height - currentHeight)
+                        std = standardsFull.reduce((prev, curr) =>
+                          Math.abs((curr.height ?? 0) - currentHeight) <
+                          Math.abs((prev.height ?? 0) - currentHeight)
                             ? curr
                             : prev,
                         );
                         val = head.weight || selectedChild.birthWeight;
                         label = 'berat badan menurut tinggi badan (BB/TB)';
                       } else {
-                        std = standardsFull.reduce((prev: any, curr: any) =>
-                          Math.abs(curr.age - lastAge) < Math.abs(prev.age - lastAge) ? curr : prev,
+                        std = standardsFull.reduce((prev, curr) =>
+                          Math.abs((curr.age ?? 0) - lastAge) < Math.abs((prev.age ?? 0) - lastAge)
+                            ? curr
+                            : prev,
                         );
                         if (growthTab === 'Weight') {
                           if (weightIndicator === 'IMT_Umur') {
@@ -1291,14 +1315,11 @@ const App: React.FC = () => {
                           : `usia ${std.age} bulan`;
 
                       const limits = getGrowthLimits(growthTab, weightIndicator, std);
-                      const targetMaxSD =
-                        growthTab === 'Height' ? 3 : growthTab === 'Weight' ? 1 : 2;
-
                       if (val < limits.min)
-                        return `Wah Ma, ${label} si Kecil (${valFormatted}) berada di bawah kurva standar WHO (-2 SD) untuk ${ageText}. Yuk konsultasikan ke bidan atau dokter!`;
+                        return `${label} si Kecil (${valFormatted}) berada di bawah rentang referensi ringkas untuk ${ageText}. Konsultasikan hasil pengukuran ke bidan atau dokter untuk penilaian yang tepat.`;
                       if (val > limits.max)
-                        return `Hati-hati Ma, ${label} si Kecil (${valFormatted}) berada di atas kurva standar WHO (+${targetMaxSD} SD) untuk ${ageText}. Jaga pola makan seimbang ya!`;
-                      return `Hebat Ma! ${label} si Kecil (${valFormatted}) berada di rentang normal kurva standar WHO (-2 SD hingga +${targetMaxSD} SD) untuk ${ageText}. Pertahankan nutrisinya ya!`;
+                        return `${label} si Kecil (${valFormatted}) berada di atas rentang referensi ringkas untuk ${ageText}. Konsultasikan hasil pengukuran ke bidan atau dokter untuk penilaian yang tepat.`;
+                      return `${label} si Kecil (${valFormatted}) berada di dalam rentang referensi ringkas untuk ${ageText}. Tetap pantau pertumbuhan secara rutin bersama tenaga kesehatan.`;
                     })()}
                   </p>
                 </div>

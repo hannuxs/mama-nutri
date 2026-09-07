@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "MamaNutri: Debug di Chrome",
+      "name": "Teman ASI: Debug di Chrome",
       "type": "pwa-chrome",
       "request": "launch",
       "url": "http://localhost:3000",

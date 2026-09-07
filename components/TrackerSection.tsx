@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { storage } from '../services/storage';
 import { NursingLog } from '../types';
 import { Plus, Timer, Trash2, Calendar, Filter, X } from 'lucide-react';
 
 const TrackerSection: React.FC = () => {
-  const [logs, setLogs] = useState<NursingLog[]>([]);
+  const [logs, setLogs] = useState<NursingLog[]>(storage.getLogs);
   const [isAdding, setIsAdding] = useState(false);
   const [duration, setDuration] = useState('15');
   const [side, setSide] = useState<'Left' | 'Right' | 'Both'>('Both');
@@ -15,13 +15,9 @@ const TrackerSection: React.FC = () => {
   const [endDate, setEndDate] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    setLogs(storage.getLogs());
-  }, []);
-
   const handleAddLog = () => {
     const newLog: NursingLog = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
       duration: parseInt(duration),
       side,

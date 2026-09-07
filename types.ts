@@ -20,14 +20,6 @@ export interface BMIData {
   date: string;
 }
 
-export interface EducationArticle {
-  id: string;
-  title: string;
-  category: 'Dasar' | 'Teknik' | 'Nutrisi' | 'Masalah';
-  content: string;
-  icon: string;
-}
-
 export enum AppTab {
   DASHBOARD = 'dashboard',
   EDUCATION = 'education',
@@ -56,9 +48,8 @@ export interface ChildProfile {
   growthHistory: GrowthEntry[];
 }
 
-export interface YouTubeVideo {
-  id: string;
-  title: string;
-  thumbnail: string;
-  url: string;
+export interface ReadingHistoryEntry {
+  categoryId: string;
+  subTopicId: string;
+  readAt: string;
 }

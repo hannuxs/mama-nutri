@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { storage } from '../services/storage';
 import { BMIData } from '../types';
 import { Calculator, History } from 'lucide-react';
@@ -6,19 +6,15 @@ import { Calculator, History } from 'lucide-react';
 const BMISection: React.FC = () => {
   const [weight, setWeight] = useState<string>('');
   const [height, setHeight] = useState<string>('');
-  const [history, setHistory] = useState<BMIData[]>([]);
+  const [history, setHistory] = useState<BMIData[]>(storage.getBMIData);
   const [result, setResult] = useState<BMIData | null>(null);
-
-  useEffect(() => {
-    setHistory(storage.getBMIData());
-  }, []);
 
   const calculateBMI = () => {
     const w = parseFloat(weight);
     const h = parseFloat(height) / 100; // to meters
     if (w > 0 && h > 0) {
       const bmi = parseFloat((w / (h * h)).toFixed(1));
-      let category = '';
+      let category: string;
       if (bmi < 18.5) category = 'Kekurangan Berat Badan';
       else if (bmi < 25) category = 'Normal';
       else if (bmi < 30) category = 'Kelebihan Berat Badan';
