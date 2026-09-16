@@ -601,7 +601,7 @@ const App: React.FC = () => {
         <div className="w-24 h-24 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white shadow-lg">
           <MessageCircle size={48} />
         </div>
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Butuh Bantuan Ahli?</h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Butuh Bantuan?</h3>
         <p className="text-gray-500 text-sm mb-8">
           Konsultasi langsung dengan konselor laktasi kami untuk mendapatkan panduan menyusui yang
           tepat.
