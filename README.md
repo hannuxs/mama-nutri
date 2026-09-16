@@ -1,6 +1,6 @@
 # Teman ASI
 
-Teman ASI adalah aplikasi pendamping ibu menyusui berbasis React dan TypeScript. Aplikasi ini menyediakan materi edukasi, histori bacaan, pencatatan sesi menyusui, profil dan perkembangan anak, kalkulator IMT, serta akses konsultasi.
+Teman ASI adalah aplikasi pendamping ibu menyusui berbasis React, TypeScript, dan Capacitor. Aplikasi menyediakan materi edukasi, histori bacaan, pencatatan sesi menyusui, profil dan perkembangan anak, kalkulator IMT, serta panduan bantuan offline.
 
 ## Menjalankan aplikasi
 
@@ -20,8 +20,27 @@ npm run check
 npm run build
 ```
 
+## Android
+
+Persyaratan: Android Studio, Android SDK, dan JDK 17 atau lebih baru.
+
+Sinkronkan hasil build web ke proyek Android:
+
+```bash
+npm run android:sync
+```
+
+Bangun APK debug dari folder `android`:
+
+```powershell
+.\gradlew.bat assembleDebug
+```
+
+APK tersedia di `android/app/build/outputs/apk/debug/app-debug.apk`.
+
 ## Catatan
 
-- Data aplikasi disimpan secara lokal pada browser.
+- Seluruh CSS, gambar, dan materi dibundel di dalam aplikasi tanpa dependensi runtime ke internet.
+- Data aplikasi disimpan melalui penyimpanan native perangkat dan tidak dikirim ke server.
+- Backup cloud Android dinonaktifkan dan aplikasi tidak meminta izin internet.
 - Materi bersifat edukasi dan bukan pengganti pemeriksaan tenaga kesehatan.
-- Nilai layanan eksternal dan mode debug dapat diatur melalui `config.ts`.

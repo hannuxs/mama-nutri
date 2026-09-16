@@ -15,7 +15,7 @@ const TrackerSection: React.FC = () => {
   const [endDate, setEndDate] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
 
-  const handleAddLog = () => {
+  const handleAddLog = async () => {
     const newLog: NursingLog = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
@@ -23,14 +23,14 @@ const TrackerSection: React.FC = () => {
       side,
       note,
     };
-    storage.saveLog(newLog);
+    await storage.saveLog(newLog);
     setLogs(storage.getLogs());
     setIsAdding(false);
     setNote('');
   };
 
-  const handleDelete = (id: string) => {
-    storage.deleteLog(id);
+  const handleDelete = async (id: string) => {
+    await storage.deleteLog(id);
     setLogs(storage.getLogs());
   };
 

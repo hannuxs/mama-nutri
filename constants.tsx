@@ -23,6 +23,7 @@ export interface ContentImage {
   caption?: string;
   orientation?: 'landscape' | 'portrait' | 'square';
   fit?: 'contain' | 'cover';
+  fullWidth?: boolean;
   objectPosition?: string;
   composition?: {
     width: number;
@@ -37,15 +38,6 @@ export interface ContentImage {
     }[];
   };
 }
-
-const MANUAL_PUMP_COMPOSITION: NonNullable<ContentImage['composition']> = {
-  width: 1120,
-  height: 1400,
-  panels: [
-    { x: 190, y: 20, width: 688, height: 640 },
-    { x: 204, y: 742, width: 675, height: 620, rotation: 270 },
-  ],
-};
 
 export interface ContentSection {
   title?: string;
@@ -637,7 +629,8 @@ export const EDUCATION_DATA: EducationCategory[] = [
                 alt: 'Contoh pompa ASI manual',
                 caption: 'Pompa manual',
                 orientation: 'landscape',
-                composition: MANUAL_PUMP_COMPOSITION,
+                fit: 'contain',
+                fullWidth: true,
               },
               {
                 src: '/images/material/pompa-elektrik.webp',
@@ -697,17 +690,7 @@ export const EDUCATION_DATA: EducationCategory[] = [
                 alt: 'Ilustrasi posisi jari saat memerah ASI dengan tangan',
                 caption: 'Posisi jari membentuk huruf C saat memerah ASI',
                 orientation: 'landscape',
-                composition: {
-                  width: 1120,
-                  height: 1400,
-                  columns: 2,
-                  panels: [
-                    { x: 74, y: 0, width: 462, height: 700, rotation: 270 },
-                    { x: 536, y: 0, width: 509, height: 700, rotation: 270 },
-                    { x: 74, y: 700, width: 462, height: 700, rotation: 270 },
-                    { x: 536, y: 700, width: 509, height: 700, rotation: 270 },
-                  ],
-                },
+                fit: 'contain',
               },
             ],
           },
@@ -728,7 +711,8 @@ export const EDUCATION_DATA: EducationCategory[] = [
                 alt: 'Contoh pompa ASI manual',
                 caption: 'Pompa manual',
                 orientation: 'landscape',
-                composition: MANUAL_PUMP_COMPOSITION,
+                fit: 'contain',
+                fullWidth: true,
               },
               {
                 src: '/images/material/pompa-elektrik.webp',

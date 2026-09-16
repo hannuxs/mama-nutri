@@ -1,3 +1,4 @@
+import { Preferences } from '@capacitor/preferences';
 import { BMIData, ChildProfile, NursingLog, ReadingHistoryEntry, User } from '../types';
 
 const STORAGE_KEYS = {
@@ -15,29 +16,88 @@ const LEGACY_KEYS = {
   children: 'mamanutri_children',
 } as const;
 
-const readJson = <T>(key: string, fallback: T): T => {
+interface StorageCache {
+  logs: NursingLog[];
+  bmi: BMIData[];
+  user: User | null;
+  children: ChildProfile[];
+  readingHistory: ReadingHistoryEntry[];
+}
+
+const cache: StorageCache = {
+  logs: [],
+  bmi: [],
+  user: null,
+  children: [],
+  readingHistory: [],
+};
+
+const parseJson = <T>(value: string | null, fallback: T): T => {
+  if (!value) return fallback;
+
   try {
-    const value = localStorage.getItem(key);
-    return value ? (JSON.parse(value) as T) : fallback;
+    return JSON.parse(value) as T;
   } catch {
     return fallback;
   }
 };
 
-const readWithLegacyMigration = <T>(key: string, legacyKey: string, fallback: T): T => {
+const readValue = async <T>(key: string, fallback: T): Promise<T> => {
+  const { value } = await Preferences.get({ key });
+  if (value !== null) return parseJson(value, fallback);
+
+  // Preserve data created by the previous browser-only version when running on the web.
   try {
-    const current = localStorage.getItem(key);
-    if (current !== null) return readJson(key, fallback);
-
-    const legacy = localStorage.getItem(legacyKey);
-    if (legacy === null) return fallback;
-
-    const migrated = readJson(legacyKey, fallback);
-    localStorage.setItem(key, JSON.stringify(migrated));
-    return migrated;
+    return parseJson(localStorage.getItem(key), fallback);
   } catch {
     return fallback;
   }
+};
+
+const readWithLegacyMigration = async <T>(
+  key: string,
+  legacyKey: string,
+  fallback: T,
+): Promise<T> => {
+  const currentPreference = await Preferences.get({ key });
+  if (currentPreference.value !== null) {
+    return parseJson(currentPreference.value, fallback);
+  }
+
+  try {
+    const currentLocalValue = localStorage.getItem(key);
+    if (currentLocalValue !== null) {
+      const current = parseJson(currentLocalValue, fallback);
+      await persist(key, current);
+      return current;
+    }
+  } catch {
+    // localStorage may be unavailable in restricted WebViews.
+  }
+
+  const legacyPreference = await Preferences.get({ key: legacyKey });
+  if (legacyPreference.value !== null) {
+    const legacy = parseJson(legacyPreference.value, fallback);
+    await persist(key, legacy);
+    return legacy;
+  }
+
+  try {
+    const legacyLocalValue = localStorage.getItem(legacyKey);
+    if (legacyLocalValue !== null) {
+      const legacy = parseJson(legacyLocalValue, fallback);
+      await persist(key, legacy);
+      return legacy;
+    }
+  } catch {
+    // No browser storage is available; use the empty native default.
+  }
+
+  return fallback;
+};
+
+const persist = async <T>(key: string, value: T) => {
+  await Preferences.set({ key, value: JSON.stringify(value) });
 };
 
 const isReadingHistoryEntry = (value: unknown): value is ReadingHistoryEntry => {
@@ -52,70 +112,75 @@ const isReadingHistoryEntry = (value: unknown): value is ReadingHistoryEntry => 
 };
 
 export const storage = {
-  getLogs: (): NursingLog[] => {
-    return readWithLegacyMigration(STORAGE_KEYS.logs, LEGACY_KEYS.logs, []);
+  initialize: async () => {
+    const [logs, bmi, user, children, readingHistory] = await Promise.all([
+      readWithLegacyMigration<NursingLog[]>(STORAGE_KEYS.logs, LEGACY_KEYS.logs, []),
+      readWithLegacyMigration<BMIData[]>(STORAGE_KEYS.bmi, LEGACY_KEYS.bmi, []),
+      readWithLegacyMigration<User | null>(STORAGE_KEYS.user, LEGACY_KEYS.user, null),
+      readWithLegacyMigration<ChildProfile[]>(STORAGE_KEYS.children, LEGACY_KEYS.children, []),
+      readValue<unknown>(STORAGE_KEYS.readingHistory, []),
+    ]);
+
+    cache.logs = Array.isArray(logs) ? logs : [];
+    cache.bmi = Array.isArray(bmi) ? bmi : [];
+    cache.user = user;
+    cache.children = Array.isArray(children) ? children : [];
+    cache.readingHistory = Array.isArray(readingHistory)
+      ? readingHistory.filter(isReadingHistoryEntry).slice(0, 20)
+      : [];
   },
-  saveLog: (log: NursingLog) => {
-    const logs = storage.getLogs();
-    logs.unshift(log);
-    localStorage.setItem(STORAGE_KEYS.logs, JSON.stringify(logs));
+
+  getLogs: (): NursingLog[] => [...cache.logs],
+  saveLog: async (log: NursingLog) => {
+    cache.logs = [log, ...cache.logs];
+    await persist(STORAGE_KEYS.logs, cache.logs);
   },
-  deleteLog: (id: string) => {
-    const logs = storage.getLogs();
-    const filtered = logs.filter((l) => l.id !== id);
-    localStorage.setItem(STORAGE_KEYS.logs, JSON.stringify(filtered));
+  deleteLog: async (id: string) => {
+    cache.logs = cache.logs.filter((log) => log.id !== id);
+    await persist(STORAGE_KEYS.logs, cache.logs);
   },
-  getChildren: (): ChildProfile[] => {
-    return readWithLegacyMigration(STORAGE_KEYS.children, LEGACY_KEYS.children, []);
+
+  getChildren: (): ChildProfile[] => [...cache.children],
+  saveChild: async (child: ChildProfile) => {
+    cache.children = [...cache.children, child];
+    await persist(STORAGE_KEYS.children, cache.children);
   },
-  saveChild: (child: ChildProfile) => {
-    const children = storage.getChildren();
-    children.push(child);
-    localStorage.setItem(STORAGE_KEYS.children, JSON.stringify(children));
+  updateChild: async (updatedChild: ChildProfile) => {
+    cache.children = cache.children.map((child) =>
+      child.id === updatedChild.id ? updatedChild : child,
+    );
+    await persist(STORAGE_KEYS.children, cache.children);
   },
-  updateChild: (updatedChild: ChildProfile) => {
-    const children = storage.getChildren();
-    const index = children.findIndex((c) => c.id === updatedChild.id);
-    if (index !== -1) {
-      children[index] = updatedChild;
-      localStorage.setItem(STORAGE_KEYS.children, JSON.stringify(children));
-    }
+  deleteChild: async (id: string) => {
+    cache.children = cache.children.filter((child) => child.id !== id);
+    await persist(STORAGE_KEYS.children, cache.children);
   },
-  deleteChild: (id: string) => {
-    const children = storage.getChildren();
-    const filtered = children.filter((c) => c.id !== id);
-    localStorage.setItem(STORAGE_KEYS.children, JSON.stringify(filtered));
+
+  getBMIData: (): BMIData[] => [...cache.bmi],
+  saveBMI: async (bmi: BMIData) => {
+    cache.bmi = [bmi, ...cache.bmi];
+    await persist(STORAGE_KEYS.bmi, cache.bmi);
   },
-  getBMIData: (): BMIData[] => {
-    return readWithLegacyMigration(STORAGE_KEYS.bmi, LEGACY_KEYS.bmi, []);
-  },
-  saveBMI: (bmi: BMIData) => {
-    const history = storage.getBMIData();
-    history.unshift(bmi);
-    localStorage.setItem(STORAGE_KEYS.bmi, JSON.stringify(history));
-  },
-  getUser: (): User | null => {
-    return readWithLegacyMigration(STORAGE_KEYS.user, LEGACY_KEYS.user, null);
-  },
-  setUser: (user: User | null) => {
+
+  getUser: (): User | null => cache.user,
+  setUser: async (user: User | null) => {
+    cache.user = user;
     if (user) {
-      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+      await persist(STORAGE_KEYS.user, user);
     } else {
-      localStorage.removeItem(STORAGE_KEYS.user);
+      await Preferences.remove({ key: STORAGE_KEYS.user });
     }
   },
-  getReadingHistory: (): ReadingHistoryEntry[] => {
-    const history = readJson<unknown>(STORAGE_KEYS.readingHistory, []);
-    return Array.isArray(history) ? history.filter(isReadingHistoryEntry).slice(0, 20) : [];
-  },
-  saveReadingHistory: (entry: ReadingHistoryEntry): ReadingHistoryEntry[] => {
-    const history = storage
-      .getReadingHistory()
-      .filter(
+
+  getReadingHistory: (): ReadingHistoryEntry[] => [...cache.readingHistory],
+  saveReadingHistory: async (entry: ReadingHistoryEntry): Promise<ReadingHistoryEntry[]> => {
+    cache.readingHistory = [
+      entry,
+      ...cache.readingHistory.filter(
         (item) => item.categoryId !== entry.categoryId || item.subTopicId !== entry.subTopicId,
-      );
-    const updated = [entry, ...history].slice(0, 20);
-    localStorage.setItem(STORAGE_KEYS.readingHistory, JSON.stringify(updated));
-    return updated;
+      ),
+    ].slice(0, 20);
+    await persist(STORAGE_KEYS.readingHistory, cache.readingHistory);
+    return storage.getReadingHistory();
   },
 };

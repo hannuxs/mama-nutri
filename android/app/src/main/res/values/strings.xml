@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Teman ASI</string>
+    <string name="title_activity_main">Teman ASI</string>
+    <string name="package_name">com.temanasi.app</string>
+    <string name="custom_url_scheme">com.temanasi.app</string>
+</resources>

@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Clock,
   Edit2,
-  Heart,
   History,
   Home,
   MessageCircle,
@@ -34,7 +33,6 @@ import BMISection from './components/BMISection';
 import ArticleContent from './components/ArticleContent';
 import RecentReads from './components/RecentReads';
 import TrackerSection from './components/TrackerSection';
-import { CONFIG } from './config';
 import { EDUCATION_DATA, EducationCategory, getIcon, SubTopic } from './constants';
 import { storage } from './services/storage';
 import { AppTab, ChildProfile, GrowthEntry, ReadingHistoryEntry } from './types';
@@ -239,8 +237,8 @@ const App: React.FC = () => {
     };
   })();
 
-  const handleOpenTopic = (category: EducationCategory, topic: SubTopic) => {
-    const updatedHistory = storage.saveReadingHistory({
+  const handleOpenTopic = async (category: EducationCategory, topic: SubTopic) => {
+    const updatedHistory = await storage.saveReadingHistory({
       categoryId: category.id,
       subTopicId: topic.id,
       readAt: new Date().toISOString(),
@@ -274,7 +272,7 @@ const App: React.FC = () => {
     return { years, months, days };
   };
 
-  const handleAddChild = () => {
+  const handleAddChild = async () => {
     if (!childName || !childBirthDate) return;
 
     const newChild: ChildProfile = {
@@ -293,11 +291,11 @@ const App: React.FC = () => {
       const existing = children.find((c) => c.id === editingChildId);
       if (existing) {
         const updated = { ...newChild, id: editingChildId, growthHistory: existing.growthHistory };
-        storage.updateChild(updated);
+        await storage.updateChild(updated);
         setChildren(children.map((c) => (c.id === editingChildId ? updated : c)));
       }
     } else {
-      storage.saveChild(newChild);
+      await storage.saveChild(newChild);
       setChildren([...children, newChild]);
     }
 
@@ -320,11 +318,11 @@ const App: React.FC = () => {
     setIsAddingChild(true);
   };
 
-  const handleDeleteChild = (id: string, e: React.MouseEvent) => {
+  const handleDeleteChild = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const confirmDelete = window.confirm('Hapus profil anak beserta seluruh riwayatnya?');
     if (confirmDelete) {
-      storage.deleteChild(id);
+      await storage.deleteChild(id);
       setChildren(children.filter((c) => c.id !== id));
       if (selectedChild?.id === id) {
         setSelectedChild(null);
@@ -332,7 +330,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleAddGrowthRecord = () => {
+  const handleAddGrowthRecord = async () => {
     if (!selectedChild || !growthDate) return;
 
     const entry: GrowthEntry = {
@@ -359,7 +357,7 @@ const App: React.FC = () => {
       growthHistory: updatedHistory,
     };
 
-    storage.updateChild(updatedChild);
+    await storage.updateChild(updatedChild);
     setChildren(children.map((c) => (c.id === updatedChild.id ? updatedChild : c)));
     setSelectedChild(updatedChild);
     setIsAddingGrowth(false);
@@ -380,13 +378,13 @@ const App: React.FC = () => {
     setIsHistoryView(false);
   };
 
-  const handleDeleteGrowthEntry = (id: string) => {
+  const handleDeleteGrowthEntry = async (id: string) => {
     if (!selectedChild) return;
     const confirmDelete = window.confirm('Hapus data perkembangan ini?');
     if (confirmDelete) {
       const updatedHistory = selectedChild.growthHistory.filter((h) => h.id !== id);
       const updatedChild = { ...selectedChild, growthHistory: updatedHistory };
-      storage.updateChild(updatedChild);
+      await storage.updateChild(updatedChild);
       setChildren(children.map((c) => (c.id === updatedChild.id ? updatedChild : c)));
       setSelectedChild(updatedChild);
     }
@@ -412,8 +410,12 @@ const App: React.FC = () => {
           <h1 className="text-2xl font-black text-gray-800">Halo, Mama! 🌸</h1>
           <p className="text-gray-500 text-sm">Semangat mengASIhi hari ini.</p>
         </div>
-        <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-500">
-          <Heart fill="currentColor" size={24} />
+        <div className="w-14 h-14 bg-pink-50 rounded-2xl flex items-center justify-center border border-pink-100 shadow-sm">
+          <img
+            src="/images/brand/logo-teman-asi.png"
+            alt="Logo Teman ASI"
+            className="w-11 h-11 object-contain"
+          />
         </div>
       </div>
 
@@ -595,42 +597,23 @@ const App: React.FC = () => {
 
   const renderConsultation = () => (
     <div className="space-y-6 animate-fade-in">
-      <h2 className="text-2xl font-black text-gray-800">Konsultasi</h2>
+      <h2 className="text-2xl font-black text-gray-800">Bantuan Offline</h2>
 
       <div className="glass-card p-8 rounded-[40px] text-center border-white">
         <div className="w-24 h-24 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white shadow-lg">
           <MessageCircle size={48} />
         </div>
-        <h3 className="text-xl font-bold text-gray-800 mb-2">Butuh Bantuan?</h3>
-        <p className="text-gray-500 text-sm mb-8">
-          Konsultasi langsung dengan konselor laktasi kami untuk mendapatkan panduan menyusui yang
-          tepat.
+        <h3 className="text-xl font-bold text-gray-800 mb-2">Panduan Selalu Tersedia</h3>
+        <p className="text-gray-500 text-sm leading-6">
+          Seluruh materi, catatan menyusui, kalkulator, dan data pertumbuhan dapat digunakan tanpa
+          koneksi internet. Buka menu Materi untuk mencari panduan yang dibutuhkan.
         </p>
-
-        <button
-          onClick={() => window.open(CONFIG.CONSULTATION_EXTERNAL_URL, '_blank')}
-          className="w-full bg-pink-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-pink-200 active:scale-95 transition-all"
-        >
-          Konsultasi Sekarang
-        </button>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-gray-100">
-        <h4 className="font-bold text-gray-800 mb-3">Jam Layanan</h4>
-        <div className="space-y-2 text-sm text-gray-600">
-          <div className="flex justify-between">
-            <span>Senin - Jumat</span>
-            <span className="font-medium">08:00 - 17:00</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Sabtu</span>
-            <span className="font-medium">09:00 - 15:00</span>
-          </div>
-          <div className="flex justify-between text-pink-500 font-bold">
-            <span>Minggu</span>
-            <span>Tutup</span>
-          </div>
-        </div>
+      <div className="rounded-3xl border border-amber-100 bg-amber-50 p-6 text-sm leading-6 text-amber-900">
+        Materi aplikasi tidak menggantikan pemeriksaan tenaga kesehatan. Jika ibu atau bayi tampak
+        sangat lemas, sulit bernapas, mengalami perdarahan, demam tinggi, atau kondisi darurat lain,
+        segera cari pertolongan ke fasilitas kesehatan terdekat.
       </div>
     </div>
   );
@@ -1524,7 +1507,7 @@ const App: React.FC = () => {
           { tab: AppTab.EDUCATION, icon: BookOpen, label: 'Materi' },
           { tab: AppTab.TRACKER, icon: Activity, label: 'Tracker' },
           { tab: AppTab.HEALTH, icon: Calculator, label: 'IMT' },
-          { tab: AppTab.CONSULTATION, icon: MessageCircle, label: 'Konsultasi' },
+          { tab: AppTab.CONSULTATION, icon: MessageCircle, label: 'Bantuan' },
         ].map(({ tab, icon: Icon, label }) => (
           <button
             key={tab}

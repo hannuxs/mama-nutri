@@ -9,7 +9,7 @@ const BMISection: React.FC = () => {
   const [history, setHistory] = useState<BMIData[]>(storage.getBMIData);
   const [result, setResult] = useState<BMIData | null>(null);
 
-  const calculateBMI = () => {
+  const calculateBMI = async () => {
     const w = parseFloat(weight);
     const h = parseFloat(height) / 100; // to meters
     if (w > 0 && h > 0) {
@@ -29,7 +29,7 @@ const BMISection: React.FC = () => {
       };
 
       setResult(newData);
-      storage.saveBMI(newData);
+      await storage.saveBMI(newData);
       setHistory(storage.getBMIData());
     }
   };

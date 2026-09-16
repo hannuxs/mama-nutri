@@ -67,7 +67,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ category, topic }) => (
               {section.images.map((image, imageIndex) => (
                 <figure
                   key={`${image.src}-${imageIndex}`}
-                  className={`overflow-hidden rounded-3xl border border-pink-100 bg-pink-50/60 ${image.composition ? 'col-span-full' : ''} ${
+                  className={`overflow-hidden rounded-3xl border border-pink-100 bg-pink-50/60 ${image.composition || image.fullWidth ? 'col-span-full' : ''} ${
                     section.images?.length === 1
                       ? image.orientation === 'portrait'
                         ? 'mx-auto w-full max-w-sm'
