@@ -17,12 +17,43 @@ export interface ContentTable {
   note?: string;
 }
 
+export interface ContentImage {
+  src: string;
+  alt: string;
+  caption?: string;
+  orientation?: 'landscape' | 'portrait' | 'square';
+  fit?: 'contain' | 'cover';
+  objectPosition?: string;
+  composition?: {
+    width: number;
+    height: number;
+    columns?: number;
+    panels: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      rotation?: 0 | 90 | 180 | 270;
+    }[];
+  };
+}
+
+const MANUAL_PUMP_COMPOSITION: NonNullable<ContentImage['composition']> = {
+  width: 1120,
+  height: 1400,
+  panels: [
+    { x: 190, y: 20, width: 688, height: 640 },
+    { x: 204, y: 742, width: 675, height: 620, rotation: 270 },
+  ],
+};
+
 export interface ContentSection {
   title?: string;
   paragraphs?: string[];
   bullets?: string[];
   steps?: string[];
   table?: ContentTable;
+  images?: ContentImage[];
 }
 
 export interface ArticleCallout {
@@ -135,6 +166,14 @@ export const EDUCATION_DATA: EducationCategory[] = [
             paragraphs: [
               'ASI berubah secara alami mengikuti waktu setelah persalinan dan kebutuhan bayi. Perubahan ini merupakan proses normal.',
             ],
+            images: [
+              {
+                src: '/images/material/tahapan-asi.webp',
+                alt: 'Ilustrasi kolostrum, ASI transisi, dan ASI matur',
+                caption: 'Perubahan ASI dari kolostrum hingga ASI matur',
+                orientation: 'landscape',
+              },
+            ],
           },
           {
             title: 'Kolostrum',
@@ -152,6 +191,20 @@ export const EDUCATION_DATA: EducationCategory[] = [
             title: 'ASI matur',
             paragraphs: [
               'ASI matur mulai terbentuk setelah masa transisi. Komposisi lemak dan cairannya berubah secara bertahap selama satu sesi menyusui. Biarkan bayi menyusu sampai puas pada satu sisi sebelum menawarkan sisi lainnya.',
+            ],
+            bullets: [
+              'ASI awal (Foremilk) adalah ASI yang keluar pada awal sesi menyusui. Tampilannya dapat lebih encer karena kadar lemaknya relatif lebih rendah. ASI ini tetap mengandung zat gizi dan membantu memenuhi kebutuhan cairan bayi.',
+              'ASI akhir (Hindmilk) adalah sebutan untuk ASI yang keluar lebih lanjut dalam sesi menyusui. Kadar lemaknya cenderung lebih tinggi sehingga menyediakan lebih banyak energi dan membantu bayi merasa kenyang.',
+              'Foremilk dan Hindmilk bukan dua jenis ASI yang terpisah. Kadar lemak meningkat secara bertahap, bukan berubah mendadak pada menit tertentu. Keduanya penting, dan warna atau kekentalan saja tidak menentukan kualitas ASI.',
+              'Tidak perlu membuang ASI awal atau membatasi waktu menyusu untuk mendapatkan ASI akhir. Ikuti tanda lapar dan kenyang bayi, lalu tawarkan payudara lainnya setelah bayi selesai pada sisi pertama.',
+            ],
+            images: [
+              {
+                src: '/images/material/foremilk-hindmilk-1.webp',
+                alt: 'Perbandingan tampilan ASI pada awal dan akhir sesi menyusui',
+                caption: 'ASI dapat berubah tampilan selama satu sesi menyusui',
+                orientation: 'landscape',
+              },
             ],
           },
         ],
@@ -250,6 +303,44 @@ export const EDUCATION_DATA: EducationCategory[] = [
               'Bayi bergerak perlahan menuju payudara.',
               'Bayi melekat dan mulai menyusu.',
             ],
+            images: [
+              {
+                src: '/images/material/tahapan-imd-1.webp',
+                alt: 'Bayi melakukan kontak kulit dengan ibu pada awal IMD',
+                caption: '1. Kontak kulit',
+                orientation: 'landscape',
+              },
+              {
+                src: '/images/material/tahapan-imd-2.webp',
+                alt: 'Bayi beristirahat di dada ibu',
+                caption: '2. Beristirahat',
+                orientation: 'landscape',
+              },
+              {
+                src: '/images/material/tahapan-imd-3.webp',
+                alt: 'Bayi mulai aktif di dada ibu',
+                caption: '3. Mulai aktif',
+                orientation: 'landscape',
+              },
+              {
+                src: '/images/material/tahapan-imd-4.webp',
+                alt: 'Bayi menunjukkan refleks mencari saat IMD',
+                caption: '4. Refleks mencari',
+                orientation: 'landscape',
+              },
+              {
+                src: '/images/material/tahapan-imd-5.webp',
+                alt: 'Bayi bergerak menuju payudara saat IMD',
+                caption: '5. Bergerak menuju payudara',
+                orientation: 'landscape',
+              },
+              {
+                src: '/images/material/tahapan-imd-6.webp',
+                alt: 'Bayi melekat dan mulai menyusu saat IMD',
+                caption: '6. Melekat dan menyusu',
+                orientation: 'landscape',
+              },
+            ],
           },
           {
             title: 'Faktor pelaksanaan',
@@ -258,6 +349,14 @@ export const EDUCATION_DATA: EducationCategory[] = [
               'Kondisi bayi setelah lahir.',
               'Pengetahuan serta kesiapan ibu.',
               'Dukungan tenaga kesehatan dan kebijakan tempat bersalin.',
+            ],
+            images: [
+              {
+                src: '/images/material/jenis-persalinan.webp',
+                alt: 'Ilustrasi persalinan sesar dan persalinan pervaginam',
+                caption: 'Jenis persalinan dapat memengaruhi pelaksanaan awal IMD',
+                orientation: 'landscape',
+              },
             ],
           },
         ],
@@ -352,11 +451,27 @@ export const EDUCATION_DATA: EducationCategory[] = [
             paragraphs: [
               'Bayi berada di lekukan lengan ibu dengan seluruh tubuh menghadap tubuh ibu. Kepala dan leher bayi tersangga tanpa didorong dari belakang kepala.',
             ],
+            images: [
+              {
+                src: '/images/material/posisi-cradle.webp',
+                alt: 'Ibu menyusui bayi dengan posisi cradle hold',
+                caption: 'Posisi cradle hold',
+                orientation: 'portrait',
+              },
+            ],
           },
           {
             title: 'Football hold',
             paragraphs: [
               'Bayi berada di sisi tubuh ibu seperti memegang bola. Posisi ini dapat nyaman bagi ibu setelah operasi sesar atau saat menyusui bayi kembar.',
+            ],
+            images: [
+              {
+                src: '/images/material/posisi-football.webp',
+                alt: 'Ibu menyusui bayi dengan posisi football hold',
+                caption: 'Posisi football hold',
+                orientation: 'portrait',
+              },
             ],
           },
           {
@@ -364,11 +479,27 @@ export const EDUCATION_DATA: EducationCategory[] = [
             paragraphs: [
               'Bayi ditopang dengan lengan yang berlawanan dari payudara yang digunakan. Posisi ini membantu ibu mengontrol bahu dan leher bayi ketika belajar melekat.',
             ],
+            images: [
+              {
+                src: '/images/material/posisi-cross-cradle.webp',
+                alt: 'Ibu menyusui bayi dengan posisi cross-cradle hold',
+                caption: 'Posisi cross-cradle hold',
+                orientation: 'portrait',
+              },
+            ],
           },
           {
             title: 'Side-lying',
             paragraphs: [
               'Ibu dan bayi berbaring miring saling berhadapan. Pastikan area tidur aman, bayi tidak terhalang bantal atau selimut, dan pindahkan bayi ke tempat tidur aman setelah selesai menyusu bila ibu akan tidur.',
+            ],
+            images: [
+              {
+                src: '/images/material/posisi-side-lying.webp',
+                alt: 'Ibu menyusui bayi sambil berbaring miring',
+                caption: 'Posisi side-lying',
+                orientation: 'portrait',
+              },
             ],
           },
         ],
@@ -381,6 +512,16 @@ export const EDUCATION_DATA: EducationCategory[] = [
           {
             paragraphs: [
               'Perlekatan yang baik membantu bayi mengeluarkan ASI secara efektif dan mengurangi nyeri. Arahkan tubuh bayi menghadap ibu, dekatkan bayi ke payudara, dan tunggu mulut terbuka lebar sebelum melekatkan.',
+            ],
+            images: [
+              {
+                src: '/images/material/perlekatan-benar.webp',
+                alt: 'Perbandingan ilustrasi perlekatan menyusui yang benar dan kurang tepat',
+                caption: 'Perbandingan perlekatan yang benar dan kurang tepat',
+                orientation: 'landscape',
+                fit: 'cover',
+                objectPosition: 'center 28%',
+              },
             ],
           },
           {
@@ -490,6 +631,33 @@ export const EDUCATION_DATA: EducationCategory[] = [
               'Siapkan wadah bersih, label, cooler bag, dan ice pack.',
               'Bicarakan kebutuhan waktu serta ruang memerah dengan atasan atau bagian kepegawaian.',
             ],
+            images: [
+              {
+                src: '/images/material/pompa-manual.webp',
+                alt: 'Contoh pompa ASI manual',
+                caption: 'Pompa manual',
+                orientation: 'landscape',
+                composition: MANUAL_PUMP_COMPOSITION,
+              },
+              {
+                src: '/images/material/pompa-elektrik.webp',
+                alt: 'Contoh pompa ASI elektrik',
+                caption: 'Pompa elektrik',
+                orientation: 'portrait',
+              },
+              {
+                src: '/images/material/botol-penyimpan-asi.webp',
+                alt: 'Contoh wadah penyimpanan ASI perah',
+                caption: 'Wadah ASI perah',
+                orientation: 'portrait',
+              },
+              {
+                src: '/images/material/cooler-bag.webp',
+                alt: 'Contoh cooler bag untuk membawa ASI perah',
+                caption: 'Cooler bag',
+                orientation: 'portrait',
+              },
+            ],
           },
           {
             title: 'Menjaga ritme menyusui',
@@ -523,6 +691,25 @@ export const EDUCATION_DATA: EducationCategory[] = [
               'Beralih ke payudara lain dan ulangi sesuai kebutuhan.',
               'Tutup wadah dan beri label tanggal serta jam pemerahan.',
             ],
+            images: [
+              {
+                src: '/images/material/posisi-jari-memerah.webp',
+                alt: 'Ilustrasi posisi jari saat memerah ASI dengan tangan',
+                caption: 'Posisi jari membentuk huruf C saat memerah ASI',
+                orientation: 'landscape',
+                composition: {
+                  width: 1120,
+                  height: 1400,
+                  columns: 2,
+                  panels: [
+                    { x: 74, y: 0, width: 462, height: 700, rotation: 270 },
+                    { x: 536, y: 0, width: 509, height: 700, rotation: 270 },
+                    { x: 74, y: 700, width: 462, height: 700, rotation: 270 },
+                    { x: 536, y: 700, width: 509, height: 700, rotation: 270 },
+                  ],
+                },
+              },
+            ],
           },
         ],
       },
@@ -534,6 +721,21 @@ export const EDUCATION_DATA: EducationCategory[] = [
           {
             paragraphs: [
               'Pompa manual maupun elektrik dapat membantu pemerahan, tetapi bukan keharusan. Pilih ukuran corong yang nyaman dan gunakan tingkat isapan terendah yang efektif.',
+            ],
+            images: [
+              {
+                src: '/images/material/pompa-manual.webp',
+                alt: 'Contoh pompa ASI manual',
+                caption: 'Pompa manual',
+                orientation: 'landscape',
+                composition: MANUAL_PUMP_COMPOSITION,
+              },
+              {
+                src: '/images/material/pompa-elektrik.webp',
+                alt: 'Contoh pompa ASI elektrik',
+                caption: 'Pompa elektrik',
+                orientation: 'portrait',
+              },
             ],
           },
           {
@@ -563,6 +765,20 @@ export const EDUCATION_DATA: EducationCategory[] = [
           {
             paragraphs: [
               'Gunakan botol atau kantong khusus ASI yang bersih, aman untuk pangan, dan dapat ditutup rapat. Simpan dalam porsi sesuai kebutuhan bayi dan beri label tanggal serta jam pemerahan.',
+            ],
+            images: [
+              {
+                src: '/images/material/botol-penyimpan-asi.webp',
+                alt: 'Contoh wadah penyimpanan ASI perah',
+                caption: 'Wadah penyimpanan ASI perah',
+                orientation: 'portrait',
+              },
+              {
+                src: '/images/material/cooler-bag.webp',
+                alt: 'Contoh cooler bag untuk membawa ASI perah',
+                caption: 'Cooler bag untuk perjalanan',
+                orientation: 'portrait',
+              },
             ],
           },
           {
@@ -639,6 +855,20 @@ export const EDUCATION_DATA: EducationCategory[] = [
             paragraphs: [
               'Nyeri dan puting lecet sering muncul pada awal menyusui, tetapi nyeri yang berat atau menetap bukan sesuatu yang harus ditahan. Penyebab yang sering adalah posisi dan perlekatan yang belum efektif.',
             ],
+            images: [
+              {
+                src: '/images/material/puting-lecet.webp',
+                alt: 'Ilustrasi tingkat luka pada puting',
+                caption: 'Gambaran puting lecet dari ringan hingga lebih berat',
+                orientation: 'landscape',
+                fit: 'contain',
+                composition: {
+                  width: 1400,
+                  height: 1120,
+                  panels: [{ x: 0, y: 195, width: 1400, height: 729, rotation: 180 }],
+                },
+              },
+            ],
           },
           {
             title: 'Tanda yang dapat muncul',
@@ -673,6 +903,16 @@ export const EDUCATION_DATA: EducationCategory[] = [
             paragraphs: [
               'Bentuk puting berbeda pada setiap ibu. Puting datar atau terbenam dapat membuat proses awal lebih menantang, tetapi banyak ibu tetap dapat menyusui karena bayi melekat pada jaringan payudara, bukan hanya puting.',
             ],
+            images: [
+              {
+                src: '/images/material/puting-datar.webp',
+                alt: 'Ilustrasi puting datar dari sisi samping dan depan',
+                caption: 'Gambaran puting datar',
+                orientation: 'landscape',
+                fit: 'cover',
+                objectPosition: 'center 43%',
+              },
+            ],
           },
           {
             title: 'Yang dapat membantu',
@@ -695,6 +935,14 @@ export const EDUCATION_DATA: EducationCategory[] = [
             paragraphs: [
               'Milk blister atau nipple bleb tampak sebagai bintik kecil putih atau kekuningan pada permukaan puting. Kondisi ini berkaitan dengan peradangan pada saluran di dekat permukaan puting dan dapat terasa nyeri.',
             ],
+            images: [
+              {
+                src: '/images/material/milk-blister.webp',
+                alt: 'Ilustrasi bintik putih kecil pada puting',
+                caption: 'Gambaran milk blister',
+                orientation: 'portrait',
+              },
+            ],
           },
           {
             title: 'Yang dapat dilakukan',
@@ -716,6 +964,16 @@ export const EDUCATION_DATA: EducationCategory[] = [
           {
             paragraphs: [
               'Puting yang kemerahan, mengilap, bersisik, atau terasa terbakar dapat mempunyai banyak penyebab, antara lain iritasi, dermatitis, trauma perlekatan, vasospasme, atau infeksi tertentu. Gejala saja tidak cukup untuk memastikan infeksi jamur.',
+            ],
+            images: [
+              {
+                src: '/images/material/keluhan-puting-terbakar.webp',
+                alt: 'Contoh perubahan pada puting yang perlu diperiksa tenaga kesehatan',
+                caption: 'Keluhan pada puting dapat memiliki beberapa penyebab',
+                orientation: 'landscape',
+                fit: 'cover',
+                objectPosition: 'center 66%',
+              },
             ],
           },
           {
@@ -742,6 +1000,14 @@ export const EDUCATION_DATA: EducationCategory[] = [
           {
             paragraphs: [
               'Mastitis adalah bagian dari spektrum peradangan payudara. Payudara dapat terasa nyeri, bengkak, hangat, dan kemerahan. Sebagian ibu mengalami demam, menggigil, atau badan terasa lemas.',
+            ],
+            images: [
+              {
+                src: '/images/material/mastitis.webp',
+                alt: 'Ilustrasi area payudara yang mengalami peradangan mastitis',
+                caption: 'Gambaran area peradangan pada mastitis',
+                orientation: 'portrait',
+              },
             ],
           },
           {

@@ -1,6 +1,7 @@
 import { AlertTriangle, Info } from 'lucide-react';
 import React from 'react';
 import { EducationCategory, SubTopic } from '../constants';
+import ArticleImage from './ArticleImage';
 
 interface ArticleContentProps {
   category: EducationCategory;
@@ -51,6 +52,38 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ category, topic }) => (
                 </li>
               ))}
             </ol>
+          )}
+
+          {section.images && (
+            <div
+              className={`grid gap-3 pt-1 ${
+                section.images.length > 1
+                  ? section.images.some((image) => image.composition)
+                    ? 'grid-cols-2'
+                    : 'grid-cols-2 sm:grid-cols-3'
+                  : 'grid-cols-1'
+              }`}
+            >
+              {section.images.map((image, imageIndex) => (
+                <figure
+                  key={`${image.src}-${imageIndex}`}
+                  className={`overflow-hidden rounded-3xl border border-pink-100 bg-pink-50/60 ${image.composition ? 'col-span-full' : ''} ${
+                    section.images?.length === 1
+                      ? image.orientation === 'portrait'
+                        ? 'mx-auto w-full max-w-sm'
+                        : 'mx-auto w-full max-w-xl'
+                      : ''
+                  }`}
+                >
+                  <ArticleImage image={image} />
+                  {image.caption && (
+                    <figcaption className="border-t border-pink-100 bg-white px-3 py-2 text-center text-xs font-bold leading-5 text-gray-500">
+                      {image.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
           )}
 
           {section.table && (
